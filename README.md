@@ -1,0 +1,1 @@
+# smart_class-to-auto-notes
