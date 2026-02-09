@@ -2,11 +2,13 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 import os
 import shutil
 import uuid
+import whisper
 
 app = FastAPI(title="auto notes", version="0.1.0")
 
 TEMP_DIR = "temp"
 os.makedirs(TEMP_DIR, exist_ok=True)
+model = whisper.load_model("small")
 
 
 @app.post("/uploadfile/")
@@ -22,12 +24,17 @@ async def upload_file(file: UploadFile = File(...)):
     temp_path = os.path.join(TEMP_DIR, temp_filename)
 
     try:
+       
         with open(temp_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
+
+        result = model.transcribe(temp_path, task="translate")
+
         return {
-            "message": "File uploaded successfully",
-            "temp_file": temp_filename
+            "message": "File uploaded and transcribed successfully",
+            "transcription": result["text"],
+            "language": result["language"]
         }
 
     finally:
