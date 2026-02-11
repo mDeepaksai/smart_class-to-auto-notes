@@ -8,7 +8,8 @@ app = FastAPI(title="auto notes", version="0.1.0")
 
 TEMP_DIR = "temp"
 os.makedirs(TEMP_DIR, exist_ok=True)
-model = whisper.load_model("small")
+
+model = whisper.load_model("base")
 
 
 @app.post("/uploadfile/")
@@ -24,17 +25,28 @@ async def upload_file(file: UploadFile = File(...)):
     temp_path = os.path.join(TEMP_DIR, temp_filename)
 
     try:
-       
         with open(temp_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
-
         result = model.transcribe(temp_path, task="translate")
+
+        language_map = {
+            "hi": "Hindi",
+            "en": "English",
+            "te": "Telugu",
+            "ta": "Tamil",
+            "kn": "Kannada",
+            "ml": "Malayalam"
+        }
+
+        language_code = result["language"]
+        language_name = language_map.get(language_code, "Unknown")
 
         return {
             "message": "File uploaded and transcribed successfully",
             "transcription": result["text"],
-            "language": result["language"]
+            "language": language_code,
+            "language_name": language_name
         }
 
     finally:
