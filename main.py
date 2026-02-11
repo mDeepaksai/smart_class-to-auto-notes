@@ -11,6 +11,11 @@ os.makedirs(TEMP_DIR, exist_ok=True)
 
 model = whisper.load_model("base")
 
+@app.get("/")
+def welcome_message():
+    return {
+        "message": "Welcome to the auto notes API. Use the /uploadfile/ endpoint to upload a WAV file for transcription and that transcription is summarised also."
+        }
 
 @app.post("/uploadfile/")
 async def upload_file(file: UploadFile = File(...)):
