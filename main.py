@@ -1,11 +1,15 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException,Depends
+from sqlalchemy.orm import Session
 import os
 import shutil
 import uuid
 import whisper
 from transformers import pipeline
+from table import Lecture
+import database_model
 
 app = FastAPI(title="Auto Notes API", version="0.2.0")
+database_model.Base.metadata.create_all(bind=database_model.engine)
 
 TEMP_DIR = "temp"
 os.makedirs(TEMP_DIR, exist_ok=True)
@@ -22,6 +26,12 @@ summarizer = pipeline(
     model="facebook/bart-large-cnn"
 )
 
+def get_db():
+    db = database_model.SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 @app.get("/")
 def welcome_message():
@@ -29,9 +39,13 @@ def welcome_message():
         "message": "Upload WAV file to /uploadfile/ for transcription, grammar correction, and summarization."
     }
 
+@app.get("/lectures/")
+def get_lectures(db: Session = Depends(get_db)):
+    lectures = db.query(Lecture).all()
+    return lectures
 
 @app.post("/uploadfile/")
-async def upload_file(file: UploadFile = File(...)):
+async def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db)):
 
     if file.content_type != "audio/wav":
         raise HTTPException(
@@ -76,12 +90,21 @@ async def upload_file(file: UploadFile = File(...)):
         language_code = result.get("language", "unknown")
         language_name = language_map.get(language_code, "Unknown")
 
+        new_lecture = Lecture(
+            subject=language_name,
+            title=temp_filename,
+            transcript=corrected_text,
+            summary=summary_text
+        )
+
+        db.add(new_lecture)
+        db.commit()
+        db.refresh(new_lecture)
+
         return {
             "message": "File processed successfully",
-            # "transcription_raw": raw_text,
             "transcription_corrected": corrected_text,
             "summary": summary_text,
-            # "language_code": language_code,
             "language_name": language_name
         }
 
