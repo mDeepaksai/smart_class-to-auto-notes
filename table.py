@@ -4,9 +4,9 @@ from database_model import Base
 class Lecture(Base):
     __tablename__ = "lectures"
 
-    id = Column(Integer, primary_key=True, index=True)
-    subject = Column(String(100), nullable=False)
-    title = Column(String(150))
+    id         = Column(Integer, primary_key=True, index=True)
+    subject    = Column(String(100), nullable=False)
+    title      = Column(String(150), nullable=False)
     transcript = Column(Text, nullable=False)
-    summary = Column(Text, nullable=False)
+    summary    = Column(Text, nullable=False)
     created_at = Column(TIMESTAMP, server_default=func.now())
