@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlalchemy
+pymysql
+whisper
+openai-whisper
+transformers==4.35.0
+torch
+huggingface-hub
+python-multipart
+pydantic
