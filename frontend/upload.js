@@ -2,11 +2,7 @@
 //  js/upload.js
 // ============================================================
 
-// ✅ ALL imports must be at top — no code before them
-// Change this
 import { uploadWavFile, debugAudio, pingServer, showToast, API_BASE } from './api.js';
-
-// No change needed — if both files are in root, ./api.js is correct ✅
 
 // ════════════════════════════════════════════════════════════
 //  SERVER PING
@@ -54,6 +50,33 @@ function setStage(id, state, sub = '') {
 function resetStages() {
   ['stage-file', 'stage-upload', 'stage-whisper', 'stage-nlp', 'stage-save']
     .forEach(id => setStage(id, '', 'Waiting…'));
+}
+
+// ════════════════════════════════════════════════════════════
+//  PROGRESS BAR HELPERS
+// ════════════════════════════════════════════════════════════
+function setProgressUpload(pct) {
+  document.getElementById('progress-pct').textContent  = pct + '%';
+  document.getElementById('progress-bar').style.width  = pct + '%';
+  document.getElementById('progress-bar').style.animation = 'none';
+  document.getElementById('progress-bar').style.opacity   = '1';
+}
+
+function setProgressProcessing() {
+  // Hide percentage — server is now processing, no % to show
+  document.getElementById('progress-pct').textContent      = 'Processing…';
+  document.getElementById('progress-label').textContent    = 'Server is transcribing & summarizing… please wait';
+  document.getElementById('progress-bar').style.width      = '100%';
+  // Pulse the bar so user knows it's still working
+  document.getElementById('progress-bar').style.animation  = 'pulse-bar 1.5s ease-in-out infinite';
+}
+
+function setProgressDone() {
+  document.getElementById('progress-pct').textContent     = '✓ Done';
+  document.getElementById('progress-label').textContent   = 'Complete!';
+  document.getElementById('progress-bar').style.width     = '100%';
+  document.getElementById('progress-bar').style.animation = 'none';
+  document.getElementById('progress-bar').style.opacity   = '1';
 }
 
 // ════════════════════════════════════════════════════════════
@@ -123,29 +146,37 @@ document.getElementById('btn-upload').addEventListener('click', async () => {
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Uploading…';
 
+  resetStages();
+  setStage('stage-file',   'done',   selectedFile.name);
   setStage('stage-upload', 'active', 'Sending to server…');
+
   document.getElementById('progress-wrap').classList.remove('hidden');
   document.getElementById('result-card').classList.add('hidden');
-  document.getElementById('progress-bar').style.width = '0%';
+  document.getElementById('progress-label').textContent = 'Uploading…';
+  setProgressUpload(0);
 
   try {
     const result = await uploadWavFile(
       { file: selectedFile, title, subject, language: lang, initial_prompt: prompt },
       (pct) => {
-        document.getElementById('progress-pct').textContent = pct + '%';
-        document.getElementById('progress-bar').style.width  = pct + '%';
-        if (pct >= 100) {
-          document.getElementById('progress-label').textContent = 'Processing…';
+        if (pct < 100) {
+          // ── Still uploading — show real % ──
+          setProgressUpload(pct);
+        } else {
+          // ── Upload done — server now processing ──
           setStage('stage-upload',  'done',   'Uploaded ✓');
           setStage('stage-whisper', 'active', 'Transcribing… (may take 1–2 min)');
           setStage('stage-nlp',     'active', 'Waiting for NLP pipeline…');
+          setProgressProcessing();  // pulse bar — no fake %
         }
       }
     );
 
+    // ── Server responded — all done ──
     setStage('stage-whisper', 'done', 'Transcribed ✓');
     setStage('stage-nlp',     'done', 'Summarized ✓');
     setStage('stage-save',    'done', `Saved · ID #${result.id}`);
+    setProgressDone();
 
     document.getElementById('result-card').classList.remove('hidden');
     document.getElementById('result-info').innerHTML = `
@@ -167,11 +198,12 @@ document.getElementById('btn-upload').addEventListener('click', async () => {
         ${escHtml((result.summary || '').slice(0, 220))}…
       </div>
     `;
-    document.getElementById('result-view').href = `lecture_detail.html?id=${result.id}`;
+    document.getElementById('result-view').href = `Lecturedetail.html?id=${result.id}`;
     showToast('Lecture saved successfully!', 'success');
 
   } catch (err) {
     setStage('stage-upload', 'error', err.message);
+    document.getElementById('progress-bar').style.animation = 'none';
     showToast('Upload failed: ' + err.message, 'error');
 
   } finally {
@@ -202,6 +234,7 @@ document.getElementById('result-another').addEventListener('click', () => {
   document.getElementById('progress-label').textContent = 'Uploading…';
   document.getElementById('progress-pct').textContent   = '0%';
   document.getElementById('progress-bar').style.width   = '0%';
+  document.getElementById('progress-bar').style.animation = 'none';
 
   resetStages();
 });

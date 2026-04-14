@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, Form
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Optional, List
@@ -259,9 +260,9 @@ async def upload_raw(
 @app.post("/uploadchunk/", tags=["Embedded"])
 async def upload_chunk(
     file:            UploadFile = File(...),
-    session_id:      str        = Form(...),       # matches ESP32
-    chunk_index:     int        = Form(...),       # matches ESP32
-    is_last:         str        = Form(...),       # "true" / "false"
+    session_id:      str        = Form(...),
+    chunk_index:     int        = Form(...),
+    is_last:         str        = Form(...),
     title:           str        = Form(...),
     subject:         str        = Form(...),
     language:        str        = Form(default="ta"),
@@ -278,7 +279,6 @@ async def upload_chunk(
     print(f"[CHUNK] session={session_id} idx={chunk_index} "
           f"size={len(pcm_data)}B is_last={is_last} lang={language}")
 
-    # ── Transcribe this chunk ──────────────────────────────
     wav_bytes = build_wav_header(
         len(pcm_data), sample_rate, channels, bits_per_sample
     ) + pcm_data
@@ -295,14 +295,12 @@ async def upload_chunk(
         if os.path.exists(temp_path):
             os.remove(temp_path)
 
-    # ── Store in session ───────────────────────────────────
     chunk_sessions[session_id]["transcripts"].append((chunk_index, chunk_transcript))
     chunk_sessions[session_id]["title"]          = title
     chunk_sessions[session_id]["subject"]        = subject
     chunk_sessions[session_id]["language"]       = language
     chunk_sessions[session_id]["initial_prompt"] = initial_prompt
 
-    # ── Not last chunk ─────────────────────────────────────
     if is_last.lower() != "true":
         return {
             "status":      "chunk_received",
@@ -311,7 +309,6 @@ async def upload_chunk(
             "message":     f"Chunk {chunk_index} OK"
         }
 
-    # ── Last chunk — combine + NLP + save ─────────────────
     print(f"[CHUNK] Last chunk — finalizing session {session_id}...")
 
     sorted_chunks   = sorted(
@@ -432,3 +429,9 @@ def delete_lecture(lecture_id: int, db: Session = Depends(get_db)):
     db.delete(lecture)
     db.commit()
     return {"message": f"Lecture {lecture_id} deleted successfully"}
+
+# ════════════════════════════════════════════════════════════
+#  SERVE FRONTEND  — must be LAST, after all API routes
+# ════════════════════════════════════════════════════════════
+frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend")
+app.mount("/app", StaticFiles(directory=frontend_path, html=True), name="frontend")
