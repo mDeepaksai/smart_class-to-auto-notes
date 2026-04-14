@@ -1,12 +1,8 @@
 // ============================================================
-//  js/api.js — SmartClassroom API Layer
-//  Save this file inside your js/ folder
+//  Api.js — SmartClassroom API Layer
 // ============================================================
 
-// ── Change this to your FastAPI server IP ────────────────────
 export const API_BASE = 'https://smartclassroom-production.up.railway.app';
-// Phone hotspot:   export const API_BASE = 'http://192.168.43.100:8000';
-// College network: export const API_BASE = 'http://10.153.122.85:8000';
 
 // ════════════════════════════════════════════════════════════
 //  CORE FETCH WRAPPER
@@ -32,7 +28,7 @@ async function apiFetch(path, options = {}) {
 // ════════════════════════════════════════════════════════════
 export async function pingServer() {
   const res = await fetch(API_BASE + '/', {
-    signal: AbortSignal.timeout(4000)
+    signal: AbortSignal.timeout(15000)  // increased to 15s for Railway cold start
   });
   if (!res.ok) throw new Error('Server returned ' + res.status);
   return res.json();
@@ -108,10 +104,10 @@ export async function uploadWavFile(
     };
 
     xhr.onerror   = () => reject(new Error('Network error — server unreachable'));
-    xhr.ontimeout = () => reject(new Error('Request timed out (120s)'));
+    xhr.ontimeout = () => reject(new Error('Request timed out (300s)'));
 
     xhr.open('POST', `${API_BASE}/uploadfile/`);
-    xhr.timeout = 120000;
+    xhr.timeout = 300000; // 5 minutes for Groq processing
     xhr.send(formData);
   });
 }
