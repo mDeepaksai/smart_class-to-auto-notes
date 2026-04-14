@@ -10,6 +10,10 @@ db_url = os.environ.get(
     "mysql+pymysql://root:deeps%40simi@localhost:3306/smartclassroom"
 )
 
+# Fix Railway MySQL URL format
+if db_url and "mysql://" in db_url and "pymysql" not in db_url:
+    db_url = db_url.replace("mysql://", "mysql+pymysql://")
+
 # Railway gives postgres:// but sqlalchemy needs postgresql://
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)

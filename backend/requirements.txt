@@ -2,6 +2,7 @@ fastapi
 uvicorn
 sqlalchemy
 pymysql
+mysqlclient
 python-multipart
 pydantic
 groq
