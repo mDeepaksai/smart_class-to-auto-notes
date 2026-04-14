@@ -3,6 +3,7 @@ uvicorn
 sqlalchemy
 pymysql
 mysqlclient
+cryptography
 python-multipart
 pydantic
 groq
