@@ -5,16 +5,24 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Optional, List
 from collections import defaultdict
-import os, shutil, uuid, struct, whisper
-from transformers import pipeline
+from dotenv import load_dotenv
+import os, shutil, uuid, struct
+from groq import Groq
 
 import database_model
 from table import Lecture
 
+load_dotenv()
+
+# ════════════════════════════════════════════════════════════
+#  GROQ CLIENT
+# ════════════════════════════════════════════════════════════
+groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+
 # ════════════════════════════════════════════════════════════
 #  APP
 # ════════════════════════════════════════════════════════════
-app = FastAPI(title="SmartClassroom Auto Notes API", version="0.6.0")
+app = FastAPI(title="SmartClassroom Auto Notes API", version="0.7.0")
 
 # ── CORS ─────────────────────────────────────────────────────
 app.add_middleware(
@@ -41,32 +49,14 @@ os.makedirs(TEMP_DIR, exist_ok=True)
 
 # ── In-memory chunk session store ────────────────────────────
 chunk_sessions: dict = defaultdict(lambda: {
-    "transcripts":  [],
-    "title":        "",
-    "subject":      "",
-    "language":     "ta",
+    "transcripts":    [],
+    "title":          "",
+    "subject":        "",
+    "language":       "ta",
     "initial_prompt": ""
 })
 
-# ════════════════════════════════════════════════════════════
-#  LOAD AI MODELS
-# ════════════════════════════════════════════════════════════
-print("[STARTUP] Loading Whisper small model...")
-whisper_model = whisper.load_model("small")
-
-print("[STARTUP] Loading grammar corrector...")
-grammar_pipe = pipeline(
-    "text2text-generation",
-    model="prithivida/grammar_error_correcter_v1"
-)
-
-print("[STARTUP] Loading summarizer...")
-summarizer = pipeline(
-    "summarization",
-    model="facebook/bart-large-cnn"
-)
-
-print("[STARTUP] ✅ All models loaded!")
+print("[STARTUP] ✅ Groq API client ready — no heavy models needed!")
 
 # ════════════════════════════════════════════════════════════
 #  SCHEMAS
@@ -118,35 +108,69 @@ def build_wav_header(pcm_size: int, sample_rate: int,
 
 def transcribe_audio(path: str, language: str = "ta",
                      initial_prompt: str = "") -> str:
-    result = whisper_model.transcribe(
-        path,
-        task="translate",
-        language=language,
-        fp16=False,
-        verbose=False,
-        initial_prompt=initial_prompt if initial_prompt.strip() else None
-    )
-    return result["text"].strip()
+    """Transcribe audio using Groq Whisper API"""
+    print(f"[GROQ] Transcribing audio | lang={language}")
+    with open(path, "rb") as audio_file:
+        result = groq_client.audio.transcriptions.create(
+            file=(os.path.basename(path), audio_file.read()),
+            model="whisper-large-v3",
+            prompt=initial_prompt if initial_prompt.strip() else None,
+            language=language if language != "ta" else None,
+            response_format="text"
+        )
+    transcript = result if isinstance(result, str) else result.text
+    print(f"[GROQ] Transcript: {transcript[:100]}...")
+    return transcript.strip()
 
 
 def correct_and_summarize(raw_text: str):
-    print(f"[NLP] Correcting grammar ({len(raw_text)} chars)...")
+    """Grammar correct and summarize using Groq LLaMA"""
+    print(f"[GROQ] Correcting & summarizing ({len(raw_text)} chars)...")
 
-    # prithivida model uses "gec:" prefix
-    corrected = grammar_pipe(
-        f"gec: {raw_text}",
-        max_length=512,
-        truncation=True
-    )[0]["generated_text"]
+    response = groq_client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {
+                "role": "system",
+                "content": (
+                    "You are an academic note-taking assistant. "
+                    "Given a raw lecture transcript, you must:\n"
+                    "1. Correct all grammar and spelling errors\n"
+                    "2. Return a JSON object with exactly two fields:\n"
+                    "   - 'corrected': the full grammar-corrected transcript\n"
+                    "   - 'summary': a concise 3-5 sentence academic summary\n"
+                    "Return ONLY valid JSON, no extra text."
+                )
+            },
+            {
+                "role": "user",
+                "content": f"Transcript:\n{raw_text}"
+            }
+        ],
+        temperature=0.3,
+        max_tokens=2048,
+    )
 
-    print("[NLP] Summarizing...")
-    summary = summarizer(
-        corrected,
-        max_length=150,
-        min_length=40,
-        do_sample=False
-    )[0]["summary_text"]
+    import json
+    content = response.choices[0].message.content.strip()
 
+    # Strip markdown code fences if present
+    if content.startswith("```"):
+        content = content.split("```")[1]
+        if content.startswith("json"):
+            content = content[4:]
+    content = content.strip()
+
+    try:
+        parsed    = json.loads(content)
+        corrected = parsed.get("corrected", raw_text)
+        summary   = parsed.get("summary", raw_text[:200])
+    except Exception:
+        # Fallback if JSON parsing fails
+        corrected = raw_text
+        summary   = raw_text[:300]
+
+    print(f"[GROQ] ✅ Done | summary: {summary[:80]}...")
     return corrected, summary
 
 
@@ -167,11 +191,9 @@ def save_to_db(title, subject, transcript, summary, db) -> Lecture:
 def process_audio_file(temp_path, title, subject,
                         language, initial_prompt, db) -> LectureResponse:
     try:
-        print(f"[PIPELINE] Transcribing | lang={language}")
-        raw_text = transcribe_audio(temp_path, language, initial_prompt)
-        print(f"[PIPELINE] Raw: {raw_text[:100]}...")
+        raw_text          = transcribe_audio(temp_path, language, initial_prompt)
         corrected, summary = correct_and_summarize(raw_text)
-        lecture = save_to_db(title, subject, corrected, summary, db)
+        lecture            = save_to_db(title, subject, corrected, summary, db)
         return LectureResponse.from_orm(lecture)
     except Exception as e:
         db.rollback()
@@ -186,14 +208,14 @@ def process_audio_file(temp_path, title, subject,
 def health():
     return {
         "status":  "ok",
-        "message": "SmartClassroom API v0.6.0 running",
+        "message": "SmartClassroom API v0.7.0 running (Groq powered)",
         "routes": {
-            "POST /uploadfile/":  "Manual WAV upload",
-            "POST /uploadraw/":   "ESP32 single PCM blob",
-            "POST /uploadchunk/": "ESP32 chunked PCM",
-            "POST /debug_audio/": "Audio amplitude check",
-            "GET  /lectures/":    "All lectures",
-            "GET  /lectures/{id}":"Single lecture",
+            "POST /uploadfile/":     "Manual WAV upload",
+            "POST /uploadraw/":      "ESP32 single PCM blob",
+            "POST /uploadchunk/":    "ESP32 chunked PCM",
+            "POST /debug_audio/":    "Audio amplitude check",
+            "GET  /lectures/":       "All lectures",
+            "GET  /lectures/{id}":   "Single lecture",
             "PATCH  /lectures/{id}": "Edit lecture",
             "DELETE /lectures/{id}": "Delete lecture"
         }
@@ -288,7 +310,6 @@ async def upload_chunk(
         with open(temp_path, "wb") as f:
             f.write(wav_bytes)
         chunk_transcript = transcribe_audio(temp_path, language, initial_prompt)
-        print(f"[CHUNK] Transcript: {chunk_transcript[:80]}...")
     except Exception as e:
         raise HTTPException(500, f"Transcription error: {str(e)}")
     finally:
@@ -318,7 +339,6 @@ async def upload_chunk(
     saved_title     = chunk_sessions[session_id]["title"]
     saved_subject   = chunk_sessions[session_id]["subject"]
 
-    print(f"[CHUNK] Full ({len(sorted_chunks)} chunks): {full_transcript[:150]}...")
     del chunk_sessions[session_id]
 
     try:
@@ -431,7 +451,8 @@ def delete_lecture(lecture_id: int, db: Session = Depends(get_db)):
     return {"message": f"Lecture {lecture_id} deleted successfully"}
 
 # ════════════════════════════════════════════════════════════
-#  SERVE FRONTEND  — must be LAST, after all API routes
+#  SERVE FRONTEND — must be LAST after all API routes
 # ════════════════════════════════════════════════════════════
 frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend")
-app.mount("/app", StaticFiles(directory=frontend_path, html=True), name="frontend")
+if os.path.exists(frontend_path):
+    app.mount("/app", StaticFiles(directory=frontend_path, html=True), name="frontend")
