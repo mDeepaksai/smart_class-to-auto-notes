@@ -4,7 +4,7 @@
 // ============================================================
 
 // ── Change this to your FastAPI server IP ────────────────────
-export const API_BASE = 'http://localhost:8000';
+export const API_BASE = 'https://smartclassroom-production.up.railway.app';
 // Phone hotspot:   export const API_BASE = 'http://192.168.43.100:8000';
 // College network: export const API_BASE = 'http://10.153.122.85:8000';
 
