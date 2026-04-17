@@ -18,7 +18,7 @@
     <ul class="nav-links">
       <li><a href="index.html">◈ <span>Dashboard</span></a></li>
       <li><a href="lectures.html" class="active">≡ <span>Lectures</span></a></li>
-      <li><a href="upload.html">↑ <span>Upload</span></a></li>
+      <li><a href="Upload.html">↑ <span>Upload</span></a></li>
     </ul>
     <div class="nav-status">
       <span class="status-dot"></span>
@@ -36,7 +36,7 @@
       <div class="flex items-center gap-1">
         <button class="btn btn-ghost btn-sm" id="btn-refresh" title="Refresh">↻ Refresh</button>
         <button class="btn btn-danger btn-sm" id="btn-delete-all" title="Delete All Lectures">✕ Delete All</button>
-        <a href="upload.html" class="btn btn-primary">↑ Upload</a>
+        <a href="Upload.html" class="btn btn-primary">↑ Upload</a>
       </div>
     </div>
 
@@ -141,7 +141,7 @@
   </div>
 
   <script type="module">
-    import { getLectures, deleteLecture, formatDate, truncate, showToast } from './api.js';
+    import { getLectures, deleteLecture, formatDate, truncate, showToast } from './Api.js';
 
     let allLectures = [];
     let currentView = 'list';
