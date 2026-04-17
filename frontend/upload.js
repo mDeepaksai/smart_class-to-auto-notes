@@ -2,7 +2,7 @@
 //  js/upload.js
 // ============================================================
 
-import { uploadWavFile, debugAudio, pingServer, showToast, API_BASE } from './api.js';
+import { uploadWavFile, debugAudio, pingServer, showToast, API_BASE } from './Api.js';
 
 // ════════════════════════════════════════════════════════════
 //  SERVER PING

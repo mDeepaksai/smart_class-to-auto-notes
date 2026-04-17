@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════
 //  index.js — Dashboard page logic
 // ═══════════════════════════════════════════════════════════
-import { getLectures, pingServer, formatDate, truncate, showToast } from './api.js';
+import { getLectures, pingServer, formatDate, truncate, showToast } from './Api.js';
 
 async function init() {
   await checkServer();
