@@ -1,8 +1,7 @@
 fastapi
-uvicorn
+uvicorn[standard]
 sqlalchemy
 pymysql
-mysqlclient
 cryptography
 python-multipart
 pydantic
