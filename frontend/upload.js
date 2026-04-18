@@ -3,7 +3,30 @@
 // ============================================================
 
 import { uploadWavFile, debugAudio, pingServer, showToast, API_BASE } from './Api.js';
-
+  (function () {
+    var btn   = document.getElementById('nav-hamburger');
+    var links = document.getElementById('nav-links');
+    if (!btn || !links) return;
+    btn.addEventListener('click', function () {
+      var open = links.classList.toggle('open');
+      btn.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open);
+    });
+    links.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        links.classList.remove('open');
+        btn.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      });
+    });
+    document.addEventListener('click', function (e) {
+      if (!btn.contains(e.target) && !links.contains(e.target)) {
+        links.classList.remove('open');
+        btn.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
 // ════════════════════════════════════════════════════════════
 //  SERVER PING
 // ════════════════════════════════════════════════════════════

@@ -10,21 +10,24 @@
 
 <body>
 
-  <nav class="navbar">
-    <a href="index.html" class="nav-brand">
-      <div class="brand-icon">🎓</div>
-      Smart<span>Classroom</span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="index.html">◈ <span>Dashboard</span></a></li>
-      <li><a href="lectures.html" class="active">≡ <span>Lectures</span></a></li>
-      <li><a href="Upload.html">↑ <span>Upload</span></a></li>
-    </ul>
-    <div class="nav-status">
-      <span class="status-dot"></span>
-      <span id="server-status">API</span>
-    </div>
-  </nav>
+<nav class="navbar">
+  <a href="index.html" class="nav-brand">
+    <div class="brand-icon">🎓</div>
+    Smart<span>Classroom</span>
+  </a>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="index.html">◈ <span>Dashboard</span></a></li>
+    <li><a href="lectures.html" class="active">≡ <span>Lectures</span></a></li>
+    <li><a href="Upload.html">↑ <span>Upload</span></a></li>
+  </ul>
+  <div class="nav-status">
+    <span class="status-dot"></span>
+    <span id="server-status">API</span>
+  </div>
+</nav>
 
   <main class="page">
 
@@ -142,7 +145,30 @@
 
   <script type="module">
     import { getLectures, deleteLecture, formatDate, truncate, showToast } from './Api.js';
-
+      (function () {
+    var btn   = document.getElementById('nav-hamburger');
+    var links = document.getElementById('nav-links');
+    if (!btn || !links) return;
+    btn.addEventListener('click', function () {
+      var open = links.classList.toggle('open');
+      btn.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open);
+    });
+    links.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        links.classList.remove('open');
+        btn.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      });
+    });
+    document.addEventListener('click', function (e) {
+      if (!btn.contains(e.target) && !links.contains(e.target)) {
+        links.classList.remove('open');
+        btn.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
     let allLectures = [];
     let currentView = 'list';
     let deletingId = null;
