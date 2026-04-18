@@ -1,371 +1,302 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SmartClassroom — Lecture Detail</title>
   <link rel="stylesheet" href="Style.css">
 </head>
-
 <body>
-
-  <nav class="navbar">
-    <a href="index.html" class="nav-brand">
-      <div class="brand-icon">🎓</div>
-      Smart<span>Classroom</span>
-    </a>
-
-    <!-- Hamburger (shown on mobile, hidden on desktop via responsive.css) -->
-    <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-
-    <!-- Nav links — same as before, responsive.css handles open/close display -->
-    <ul class="nav-links" id="nav-links">
-      <li><a href="index.html">◈ <span>Dashboard</span></a></li>
-      <li><a href="lectures.html">≡ <span>Lectures</span></a></li>
-      <li><a href="Upload.html">↑ <span>Upload</span></a></li>
-    </ul>
-
-    <div class="nav-status">
-      <span class="status-dot"></span>
-      <span id="server-status">checking…</span>
+ 
+<nav class="navbar">
+  <a href="index.html" class="nav-brand">
+    <div class="brand-icon">🎓</div>
+    Smart<span>Classroom</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">◈ <span>Dashboard</span></a></li>
+    <li><a href="lectures.html">≡ <span>Lectures</span></a></li>
+    <li><a href="Upload.html">↑ <span>Upload</span></a></li>
+  </ul>
+  <div class="nav-status">
+    <span class="status-dot"></span>
+    <span>API</span>
+  </div>
+</nav>
+ 
+<main class="page-sm">
+ 
+  <div class="breadcrumb fade-in">
+    <a href="index.html">Dashboard</a>
+    <span class="sep">›</span>
+    <a href="lectures.html">Lectures</a>
+    <span class="sep">›</span>
+    <span id="bc-title">Loading…</span>
+  </div>
+ 
+  <!-- Loading state -->
+  <div id="loading-state" class="loading-overlay" style="padding:4rem">
+    <div class="spinner spinner-lg"></div> Loading lecture…
+  </div>
+ 
+  <!-- Error state -->
+  <div id="error-state" class="empty-state hidden">
+    <div class="empty-icon">⚠️</div>
+    <h3>Lecture not found</h3>
+    <p id="error-msg"></p>
+    <a href="lectures.html" class="btn btn-secondary mt-2">← Back to Lectures</a>
+  </div>
+ 
+  <!-- Content (hidden until loaded) -->
+  <div id="content" class="hidden">
+ 
+    <!-- Detail header -->
+    <div class="detail-header fade-in" id="detail-header">
+      <div class="flex items-center gap-1 mb-1" style="flex-wrap:wrap">
+        <span class="badge badge-amber" id="detail-subject"></span>
+        <span class="badge badge-gray text-mono" id="detail-id"></span>
+        <span class="badge badge-gray text-mono" id="detail-date"></span>
+      </div>
+      <h1 class="detail-title" id="detail-title"></h1>
+      <div class="detail-actions">
+        <button class="btn btn-primary btn-sm" id="btn-edit">✎ Edit</button>
+        <button class="btn btn-secondary btn-sm" id="btn-copy-transcript" title="Copy transcript">⎘ Copy Transcript</button>
+        <button class="btn btn-secondary btn-sm" id="btn-copy-summary" title="Copy summary">⎘ Copy Summary</button>
+        <button class="btn btn-danger btn-sm ml-auto" id="btn-delete">✕ Delete</button>
+      </div>
     </div>
-  </nav>
-
-  <main class="page-sm">
-
-    <div class="breadcrumb fade-in">
-      <a href="index.html">Dashboard</a>
-      <span class="sep">›</span>
-      <a href="lectures.html">Lectures</a>
-      <span class="sep">›</span>
-      <span id="bc-title">Loading…</span>
+ 
+    <!-- Tabs -->
+    <div class="tabs fade-in">
+      <button class="tab-btn active" data-tab="summary">Summary</button>
+      <button class="tab-btn" data-tab="transcript">Full Transcript</button>
+      <button class="tab-btn" data-tab="raw">Raw Info</button>
     </div>
-
-    <!-- Loading state -->
-    <div id="loading-state" class="loading-overlay" style="padding:4rem">
-      <div class="spinner spinner-lg"></div> Loading lecture…
+ 
+    <!-- Tab: Summary -->
+    <div id="tab-summary" class="fade-in">
+      <div class="text-block-label">AI Generated Summary</div>
+      <div class="text-block" id="summary-text"></div>
     </div>
-
-    <!-- Error state -->
-    <div id="error-state" class="empty-state hidden">
-      <div class="empty-icon">⚠️</div>
-      <h3>Lecture not found</h3>
-      <p id="error-msg"></p>
-      <a href="lectures.html" class="btn btn-secondary mt-2">← Back to Lectures</a>
+ 
+    <!-- Tab: Transcript -->
+    <div id="tab-transcript" class="hidden">
+      <div class="text-block-label">Full Transcript (Grammar Corrected)</div>
+      <div class="text-block" id="transcript-text" style="max-height:520px"></div>
     </div>
-
-    <!-- Content (hidden until loaded) -->
-    <div id="content" class="hidden">
-
-      <!-- Detail header -->
-      <div class="detail-header fade-in" id="detail-header">
-        <div class="flex items-center gap-1 mb-1" style="flex-wrap:wrap">
-          <span class="badge badge-amber" id="detail-subject"></span>
-          <span class="badge badge-gray text-mono" id="detail-id"></span>
-          <span class="badge badge-gray text-mono" id="detail-date"></span>
-        </div>
-        <h1 class="detail-title" id="detail-title"></h1>
-        <div class="detail-actions">
-          <button class="btn btn-primary btn-sm" id="btn-edit">✎ Edit</button>
-          <button class="btn btn-secondary btn-sm" id="btn-copy-transcript" title="Copy transcript">⎘ Copy
-            Transcript</button>
-          <button class="btn btn-secondary btn-sm" id="btn-copy-summary" title="Copy summary">⎘ Copy Summary</button>
-          <button class="btn btn-danger btn-sm ml-auto" id="btn-delete">✕ Delete</button>
-        </div>
+ 
+    <!-- Tab: Raw -->
+    <div id="tab-raw" class="hidden">
+      <div class="card">
+        <p class="section-label">Lecture Record</p>
+        <div id="raw-info" style="display:grid;grid-template-columns:140px 1fr;gap:8px 16px;font-size:0.875rem"></div>
       </div>
-
-      <!-- Tabs -->
-      <div class="tabs fade-in">
-        <button class="tab-btn active" data-tab="summary">Summary</button>
-        <button class="tab-btn" data-tab="transcript">Full Transcript</button>
-        <button class="tab-btn" data-tab="raw">Raw Info</button>
-      </div>
-
-      <!-- Tab: Summary -->
-      <div id="tab-summary" class="fade-in">
-        <div class="text-block-label">AI Generated Summary</div>
-        <div class="text-block" id="summary-text"></div>
-      </div>
-
-      <!-- Tab: Transcript -->
-      <div id="tab-transcript" class="hidden">
-        <div class="text-block-label">Full Transcript (Grammar Corrected)</div>
-        <div class="text-block" id="transcript-text" style="max-height:520px"></div>
-      </div>
-
-      <!-- Tab: Raw -->
-      <div id="tab-raw" class="hidden">
-        <div class="card">
-          <p class="section-label">Lecture Record</p>
-          <div id="raw-info" style="display:grid;grid-template-columns:140px 1fr;gap:8px 16px;font-size:0.875rem"></div>
-        </div>
-      </div>
-
     </div>
-
-  </main>
-
-  <footer class="footer">
-    <span class="footer-text">SmartClassroom v6 · ESP32 + FastAPI + Whisper</span>
-    <span class="footer-text"><em>smartclassroom-production.up.railway.app</em></span>
-  </footer>
-
-  <div class="toast-container" id="toast-container"></div>
-
-  <!-- Edit Modal -->
-  <div class="modal-backdrop hidden" id="edit-modal">
-    <div class="modal" style="max-width:580px">
-      <div class="modal-header">
-        <span class="modal-title">Edit Lecture</span>
-        <button class="modal-close" id="edit-modal-close">✕</button>
+ 
+  </div>
+ 
+</main>
+ 
+<footer class="footer">
+  <span class="footer-text">SmartClassroom v6 · ESP32 + FastAPI + Whisper</span>
+  <span class="footer-text"><em>smartclassroom-production.up.railway.app</em></span>
+</footer>
+ 
+<div class="toast-container" id="toast-container"></div>
+ 
+<!-- Edit Modal -->
+<div class="modal-backdrop hidden" id="edit-modal">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-header">
+      <span class="modal-title">Edit Lecture</span>
+      <button class="modal-close" id="edit-modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Title</label>
+        <input type="text" class="form-input" id="edit-title" />
       </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label class="form-label">Title</label>
-          <input type="text" class="form-input" id="edit-title" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Subject</label>
-          <input type="text" class="form-input" id="edit-subject" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Summary</label>
-          <textarea class="form-textarea" id="edit-summary" style="min-height:140px"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Transcript</label>
-          <textarea class="form-textarea" id="edit-transcript" style="min-height:180px"></textarea>
-        </div>
+      <div class="form-group">
+        <label class="form-label">Subject</label>
+        <input type="text" class="form-input" id="edit-subject" />
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" id="edit-cancel">Cancel</button>
-        <button class="btn btn-primary" id="edit-save">Save Changes</button>
+      <div class="form-group">
+        <label class="form-label">Summary</label>
+        <textarea class="form-textarea" id="edit-summary" style="min-height:140px"></textarea>
       </div>
+      <div class="form-group">
+        <label class="form-label">Transcript</label>
+        <textarea class="form-textarea" id="edit-transcript" style="min-height:180px"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="edit-cancel">Cancel</button>
+      <button class="btn btn-primary" id="edit-save">Save Changes</button>
     </div>
   </div>
-
-  <!-- Delete Modal -->
-  <div class="modal-backdrop hidden" id="delete-modal">
-    <div class="modal">
-      <div class="modal-header">
-        <span class="modal-title">Delete Lecture</span>
-        <button class="modal-close" id="delete-close">✕</button>
-      </div>
-      <div class="modal-body">
-        <p style="color:var(--text-2)">Delete <strong id="delete-name" style="color:var(--text)"></strong>?</p>
-        <p class="text-sm text-muted mt-1">This cannot be undone.</p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" id="delete-cancel">Cancel</button>
-        <button class="btn btn-danger" id="delete-confirm">Delete</button>
-      </div>
+</div>
+ 
+<!-- Delete Modal -->
+<div class="modal-backdrop hidden" id="delete-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Delete Lecture</span>
+      <button class="modal-close" id="delete-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="color:var(--text-2)">Delete <strong id="delete-name" style="color:var(--text)"></strong>?</p>
+      <p class="text-sm text-muted mt-1">This cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="delete-cancel">Cancel</button>
+      <button class="btn btn-danger" id="delete-confirm">Delete</button>
     </div>
   </div>
-
-  <script type="module">
-    (function ()
-    {
-      const btn = document.getElementById('nav-hamburger');
-      const links = document.getElementById('nav-links');
-      if (!btn || !links) return;
-
-      btn.addEventListener('click', () =>
-      {
-        const isOpen = links.classList.toggle('open');
-        btn.classList.toggle('open', isOpen);
-        btn.setAttribute('aria-expanded', isOpen);
-      });
-
-      // Close menu when a link is tapped
-      links.querySelectorAll('a').forEach(a =>
-      {
-        a.addEventListener('click', () =>
-        {
-          links.classList.remove('open');
-          btn.classList.remove('open');
-          btn.setAttribute('aria-expanded', 'false');
-        });
-      });
-
-      // Close on outside tap
-      document.addEventListener('click', (e) =>
-      {
-        if (!btn.contains(e.target) && !links.contains(e.target))
-        {
-          links.classList.remove('open');
-          btn.classList.remove('open');
-          btn.setAttribute('aria-expanded', 'false');
-        }
-      });
-    })();
-    import { getLecture, updateLecture, deleteLecture, formatDatetime, showToast } from './api.js';
-
-    const params = new URLSearchParams(location.search);
-    const lectureId = params.get('id');
-
-    let lectureData = null;
-
-    async function load()
-    {
-      if (!lectureId)
-      {
-        showError('No lecture ID in URL. Go back and select a lecture.');
-        return;
-      }
-      try
-      {
-        lectureData = await getLecture(lectureId);
-        render(lectureData);
-      } catch (err)
-      {
-        showError(err.message);
-      }
-    }
-
-    function render(l)
-    {
-      document.title = `${l.title} — SmartClassroom`;
-      document.getElementById('bc-title').textContent = l.title;
-
-      document.getElementById('detail-subject').textContent = l.subject || '—';
-      document.getElementById('detail-id').textContent = `ID #${l.id}`;
-      document.getElementById('detail-date').textContent = formatDatetime(l.created_at);
-      document.getElementById('detail-title').textContent = l.title;
-
-      document.getElementById('summary-text').textContent = l.summary || 'No summary available.';
-      document.getElementById('transcript-text').textContent = l.transcript || 'No transcript available.';
-
-      // Raw info table
-      const pairs = [
-        ['ID', `#${l.id}`],
-        ['Title', l.title],
-        ['Subject', l.subject],
-        ['Created', formatDatetime(l.created_at)],
-        ['Transcript', `${(l.transcript || '').length} chars`],
-        ['Summary', `${(l.summary || '').length} chars`],
-      ];
-      document.getElementById('raw-info').innerHTML = pairs.map(([k, v]) => `
+</div>
+ 
+<script type="module">
+import { getLecture, updateLecture, deleteLecture, formatDatetime, showToast } from './api.js';
+ 
+const params   = new URLSearchParams(location.search);
+const lectureId = params.get('id');
+ 
+let lectureData = null;
+ 
+async function load() {
+  if (!lectureId) {
+    showError('No lecture ID in URL. Go back and select a lecture.');
+    return;
+  }
+  try {
+    lectureData = await getLecture(lectureId);
+    render(lectureData);
+  } catch (err) {
+    showError(err.message);
+  }
+}
+ 
+function render(l) {
+  document.title = `${l.title} — SmartClassroom`;
+  document.getElementById('bc-title').textContent = l.title;
+ 
+  document.getElementById('detail-subject').textContent = l.subject || '—';
+  document.getElementById('detail-id').textContent      = `ID #${l.id}`;
+  document.getElementById('detail-date').textContent    = formatDatetime(l.created_at);
+  document.getElementById('detail-title').textContent   = l.title;
+ 
+  document.getElementById('summary-text').textContent    = l.summary    || 'No summary available.';
+  document.getElementById('transcript-text').textContent = l.transcript || 'No transcript available.';
+ 
+  // Raw info table
+  const pairs = [
+    ['ID',         `#${l.id}`],
+    ['Title',      l.title],
+    ['Subject',    l.subject],
+    ['Created',    formatDatetime(l.created_at)],
+    ['Transcript', `${(l.transcript || '').length} chars`],
+    ['Summary',    `${(l.summary || '').length} chars`],
+  ];
+  document.getElementById('raw-info').innerHTML = pairs.map(([k, v]) => `
     <span class="text-mono text-xs text-muted" style="padding:4px 0">${k}</span>
     <span style="padding:4px 0;word-break:break-word">${v}</span>`).join('');
-
-      document.getElementById('loading-state').classList.add('hidden');
-      document.getElementById('content').classList.remove('hidden');
-    }
-
-    function showError(msg)
-    {
-      document.getElementById('loading-state').classList.add('hidden');
-      document.getElementById('error-state').classList.remove('hidden');
-      document.getElementById('error-msg').textContent = msg;
-    }
-
-    // ── Tabs ─────────────────────────────────────────────────
-    document.querySelectorAll('.tab-btn').forEach(btn =>
-    {
-      btn.addEventListener('click', () =>
-      {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        ['tab-summary', 'tab-transcript', 'tab-raw'].forEach(id =>
-        {
-          document.getElementById(id).classList.add('hidden');
-        });
-        document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden');
-      });
+ 
+  document.getElementById('loading-state').classList.add('hidden');
+  document.getElementById('content').classList.remove('hidden');
+}
+ 
+function showError(msg) {
+  document.getElementById('loading-state').classList.add('hidden');
+  document.getElementById('error-state').classList.remove('hidden');
+  document.getElementById('error-msg').textContent = msg;
+}
+ 
+// ── Tabs ─────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ['tab-summary', 'tab-transcript', 'tab-raw'].forEach(id => {
+      document.getElementById(id).classList.add('hidden');
     });
-
-    // ── Copy buttons ─────────────────────────────────────────
-    document.getElementById('btn-copy-transcript').addEventListener('click', () =>
-    {
-      navigator.clipboard.writeText(lectureData?.transcript || '');
-      showToast('Transcript copied to clipboard', 'success');
+    document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden');
+  });
+});
+ 
+// ── Copy buttons ─────────────────────────────────────────
+document.getElementById('btn-copy-transcript').addEventListener('click', () => {
+  navigator.clipboard.writeText(lectureData?.transcript || '');
+  showToast('Transcript copied to clipboard', 'success');
+});
+ 
+document.getElementById('btn-copy-summary').addEventListener('click', () => {
+  navigator.clipboard.writeText(lectureData?.summary || '');
+  showToast('Summary copied to clipboard', 'success');
+});
+ 
+// ── Edit modal ───────────────────────────────────────────
+document.getElementById('btn-edit').addEventListener('click', () => {
+  document.getElementById('edit-title').value     = lectureData.title     || '';
+  document.getElementById('edit-subject').value   = lectureData.subject   || '';
+  document.getElementById('edit-summary').value   = lectureData.summary   || '';
+  document.getElementById('edit-transcript').value = lectureData.transcript || '';
+  document.getElementById('edit-modal').classList.remove('hidden');
+});
+ 
+function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
+document.getElementById('edit-modal-close').addEventListener('click', closeEditModal);
+document.getElementById('edit-cancel').addEventListener('click', closeEditModal);
+document.getElementById('edit-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeEditModal(); });
+ 
+document.getElementById('edit-save').addEventListener('click', async () => {
+  const btn = document.getElementById('edit-save');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  try {
+    const updated = await updateLecture(lectureId, {
+      title:      document.getElementById('edit-title').value,
+      subject:    document.getElementById('edit-subject').value,
+      summary:    document.getElementById('edit-summary').value,
+      transcript: document.getElementById('edit-transcript').value,
     });
-
-    document.getElementById('btn-copy-summary').addEventListener('click', () =>
-    {
-      navigator.clipboard.writeText(lectureData?.summary || '');
-      showToast('Summary copied to clipboard', 'success');
-    });
-
-    // ── Edit modal ───────────────────────────────────────────
-    document.getElementById('btn-edit').addEventListener('click', () =>
-    {
-      document.getElementById('edit-title').value = lectureData.title || '';
-      document.getElementById('edit-subject').value = lectureData.subject || '';
-      document.getElementById('edit-summary').value = lectureData.summary || '';
-      document.getElementById('edit-transcript').value = lectureData.transcript || '';
-      document.getElementById('edit-modal').classList.remove('hidden');
-    });
-
-    function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
-    document.getElementById('edit-modal-close').addEventListener('click', closeEditModal);
-    document.getElementById('edit-cancel').addEventListener('click', closeEditModal);
-    document.getElementById('edit-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeEditModal(); });
-
-    document.getElementById('edit-save').addEventListener('click', async () =>
-    {
-      const btn = document.getElementById('edit-save');
-      btn.disabled = true;
-      btn.textContent = 'Saving…';
-      try
-      {
-        const updated = await updateLecture(lectureId, {
-          title: document.getElementById('edit-title').value,
-          subject: document.getElementById('edit-subject').value,
-          summary: document.getElementById('edit-summary').value,
-          transcript: document.getElementById('edit-transcript').value,
-        });
-        lectureData = updated;
-        render(updated);
-        closeEditModal();
-        showToast('Lecture updated!', 'success');
-      } catch (err)
-      {
-        showToast(err.message, 'error');
-      } finally
-      {
-        btn.disabled = false;
-        btn.textContent = 'Save Changes';
-      }
-    });
-
-    // ── Delete modal ─────────────────────────────────────────
-    document.getElementById('btn-delete').addEventListener('click', () =>
-    {
-      document.getElementById('delete-name').textContent = lectureData?.title || '';
-      document.getElementById('delete-modal').classList.remove('hidden');
-    });
-
-    function closeDeleteModal() { document.getElementById('delete-modal').classList.add('hidden'); }
-    document.getElementById('delete-close').addEventListener('click', closeDeleteModal);
-    document.getElementById('delete-cancel').addEventListener('click', closeDeleteModal);
-    document.getElementById('delete-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeDeleteModal(); });
-
-    document.getElementById('delete-confirm').addEventListener('click', async () =>
-    {
-      const btn = document.getElementById('delete-confirm');
-      btn.disabled = true;
-      btn.textContent = 'Deleting…';
-      try
-      {
-        await deleteLecture(lectureId);
-        showToast('Lecture deleted', 'success');
-        setTimeout(() => window.location.href = 'lectures.html', 1000);
-      } catch (err)
-      {
-        showToast(err.message, 'error');
-        btn.disabled = false;
-        btn.textContent = 'Delete';
-      }
-    });
-
-    load();
-  </script>
+    lectureData = updated;
+    render(updated);
+    closeEditModal();
+    showToast('Lecture updated!', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save Changes';
+  }
+});
+ 
+// ── Delete modal ─────────────────────────────────────────
+document.getElementById('btn-delete').addEventListener('click', () => {
+  document.getElementById('delete-name').textContent = lectureData?.title || '';
+  document.getElementById('delete-modal').classList.remove('hidden');
+});
+ 
+function closeDeleteModal() { document.getElementById('delete-modal').classList.add('hidden'); }
+document.getElementById('delete-close').addEventListener('click', closeDeleteModal);
+document.getElementById('delete-cancel').addEventListener('click', closeDeleteModal);
+document.getElementById('delete-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeDeleteModal(); });
+ 
+document.getElementById('delete-confirm').addEventListener('click', async () => {
+  const btn = document.getElementById('delete-confirm');
+  btn.disabled = true;
+  btn.textContent = 'Deleting…';
+  try {
+    await deleteLecture(lectureId);
+    showToast('Lecture deleted', 'success');
+    setTimeout(() => window.location.href = 'lectures.html', 1000);
+  } catch (err) {
+    showToast(err.message, 'error');
+    btn.disabled = false;
+    btn.textContent = 'Delete';
+  }
+});
+ 
+load();
+</script>
 </body>
-
 </html>

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,195 +7,135 @@
   <link rel="stylesheet" href="index.css">
   <link rel="stylesheet" href="Style.css">
 </head>
-
 <body>
 
-  <nav class="navbar">
-    <a href="index.html" class="nav-brand">
-      <div class="brand-icon">🎓</div>
-      Smart<span>Classroom</span>
-    </a>
+<nav class="navbar">
+  <a href="index.html" class="nav-brand">
+    <div class="brand-icon">🎓</div>
+    Smart<span>Classroom</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">◈ <span>Dashboard</span></a></li>
+    <li><a href="lectures.html">≡ <span>Lectures</span></a></li>
+    <li><a href="Upload.html">↑ <span>Upload</span></a></li>
+  </ul>
+  <div class="nav-status">
+    <span class="status-dot"></span>
+    <span id="server-status">checking…</span>
+  </div>
+</nav>
 
-    <!-- Hamburger (shown on mobile, hidden on desktop via responsive.css) -->
-    <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+<main class="page">
 
-    <!-- Nav links — same as before, responsive.css handles open/close display -->
-    <ul class="nav-links" id="nav-links">
-      <li><a href="index.html">◈ <span>Dashboard</span></a></li>
-      <li><a href="lectures.html">≡ <span>Lectures</span></a></li>
-      <li><a href="Upload.html">↑ <span>Upload</span></a></li>
-    </ul>
-
-    <div class="nav-status">
-      <span class="status-dot"></span>
-      <span id="server-status">checking…</span>
+  <div class="page-header fade-in">
+    <div class="page-header-left">
+      <h1>Dashboard <em>Overview</em></h1>
+      <p>SmartClassroom lecture recording &amp; transcription system</p>
     </div>
-  </nav>
+    <a href="upload.html" class="btn btn-primary">↑ Upload WAV</a>
+  </div>
 
-  <main class="page">
-
-    <div class="page-header fade-in">
-      <div class="page-header-left">
-        <h1>Dashboard <em>Overview</em></h1>
-        <p>SmartClassroom lecture recording &amp; transcription system</p>
-      </div>
-      <a href="upload.html" class="btn btn-primary">↑ Upload WAV</a>
+  <div class="stats-grid stagger">
+    <div class="stat-card">
+      <div class="stat-label">Total Lectures</div>
+      <div class="stat-value" id="stat-total">—</div>
+      <div class="stat-sub">recorded &amp; processed</div>
     </div>
-
-    <div class="stats-grid stagger">
-      <div class="stat-card">
-        <div class="stat-label">Total Lectures</div>
-        <div class="stat-value" id="stat-total">—</div>
-        <div class="stat-sub">recorded &amp; processed</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Subjects</div>
-        <div class="stat-value" id="stat-subjects">—</div>
-        <div class="stat-sub">unique subjects</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Latest Upload</div>
-        <div class="stat-value" id="stat-latest" style="font-size:1.1rem;padding-top:6px">—</div>
-        <div class="stat-sub" id="stat-latest-sub"></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">API Status</div>
-        <div class="stat-value" id="stat-api" style="font-size:1.1rem;padding-top:6px">—</div>
-        <div class="stat-sub">FastAPI backend</div>
-      </div>
+    <div class="stat-card">
+      <div class="stat-label">Subjects</div>
+      <div class="stat-value" id="stat-subjects">—</div>
+      <div class="stat-sub">unique subjects</div>
     </div>
+    <div class="stat-card">
+      <div class="stat-label">Latest Upload</div>
+      <div class="stat-value" id="stat-latest" style="font-size:1.1rem;padding-top:6px">—</div>
+      <div class="stat-sub" id="stat-latest-sub"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">API Status</div>
+      <div class="stat-value" id="stat-api" style="font-size:1.1rem;padding-top:6px">—</div>
+      <div class="stat-sub">FastAPI backend</div>
+    </div>
+  </div>
 
-    <div id="main-grid">
+  <div id="main-grid">
 
-      <div>
-        <div class="flex items-center gap-2 mb-2">
-          <p class="section-label" style="margin:0">Recent Lectures</p>
-          <a href="lectures.html" class="btn btn-ghost btn-sm ml-auto">View all →</a>
-        </div>
-        <div id="recent-list">
-          <div class="loading-overlay">
-            <div class="spinner"></div> Loading lectures…
-          </div>
-        </div>
+    <div>
+      <div class="flex items-center gap-2 mb-2">
+        <p class="section-label" style="margin:0">Recent Lectures</p>
+        <a href="lectures.html" class="btn btn-ghost btn-sm ml-auto">View all →</a>
       </div>
-
-      <div class="dashboard-right stagger">
-
-        <div class="card">
-          <p class="section-label">ESP32 System</p>
-          <div class="pipeline-stages">
-            <div class="stage-item done">
-              <span class="stage-icon">🎙️</span>
-              <div>
-                <div style="font-weight:500;font-size:0.82rem">INMP441 Microphone</div>
-                <div style="font-size:0.75rem;color:var(--text-2);font-family:var(--font-mono)">16kHz · 16-bit · Mono
-                </div>
-              </div>
-            </div>
-            <div class="stage-item done">
-              <span class="stage-icon">📡</span>
-              <div>
-                <div style="font-weight:500;font-size:0.82rem">WiFi → FastAPI</div>
-                <div style="font-size:0.75rem;color:var(--text-2);font-family:var(--font-mono)">/uploadchunk/ · chunked
-                  PCM</div>
-              </div>
-            </div>
-            <div class="stage-item done">
-              <span class="stage-icon">🔤</span>
-              <div>
-                <div style="font-weight:500;font-size:0.82rem">Whisper Small</div>
-                <div style="font-size:0.75rem;color:var(--text-2);font-family:var(--font-mono)">Transcribe → Translate
-                  EN</div>
-              </div>
-            </div>
-            <div class="stage-item done">
-              <span class="stage-icon">📝</span>
-              <div>
-                <div style="font-weight:500;font-size:0.82rem">Grammar + Summary</div>
-                <div style="font-size:0.75rem;color:var(--text-2);font-family:var(--font-mono)">T5 correction · BART
-                  summary</div>
-              </div>
-            </div>
-          </div>
+      <div id="recent-list">
+        <div class="loading-overlay">
+          <div class="spinner"></div> Loading lectures…
         </div>
-
-        <div class="card">
-          <p class="section-label">API Endpoints</p>
-          <div>
-            <div class="endpoint-row"><span class="badge badge-green" style="font-size:0.65rem">POST</span> <span
-                class="text-mono text-xs text-muted">/uploadfile/</span></div>
-            <div class="endpoint-row"><span class="badge badge-green" style="font-size:0.65rem">POST</span> <span
-                class="text-mono text-xs text-muted">/uploadraw/</span></div>
-            <div class="endpoint-row"><span class="badge badge-green" style="font-size:0.65rem">POST</span> <span
-                class="text-mono text-xs text-muted">/uploadchunk/</span></div>
-            <div class="endpoint-row"><span class="badge badge-blue" style="font-size:0.65rem">GET</span> <span
-                class="text-mono text-xs text-muted">/lectures/</span></div>
-            <div class="endpoint-row"><span class="badge badge-amber" style="font-size:0.65rem">PATCH</span> <span
-                class="text-mono text-xs text-muted">/lectures/{id}</span></div>
-            <div class="endpoint-row"><span class="badge badge-gray" style="font-size:0.65rem">DEL</span> <span
-                class="text-mono text-xs text-muted">/lectures/{id}</span></div>
-          </div>
-          <div class="swagger-link">
-            <a href="https://smartclassroom-production.up.railway.app/docs" target="_blank"
-              class="btn btn-secondary btn-sm">
-              Open Swagger Docs ↗
-            </a>
-          </div>
-        </div>
-
       </div>
     </div>
 
-  </main>
+    <div class="dashboard-right stagger">
 
-  <footer class="footer">
-    <span class="footer-text">SmartClassroom v6 · ESP32 + FastAPI + Whisper</span>
-    <span class="footer-text"><em>smartclassroom-production.up.railway.app</em></span>
-  </footer>
+      <div class="card">
+        <p class="section-label">ESP32 System</p>
+        <div class="pipeline-stages">
+          <div class="stage-item done">
+            <span class="stage-icon">🎙️</span>
+            <div>
+              <div style="font-weight:500;font-size:0.82rem">INMP441 Microphone</div>
+              <div style="font-size:0.75rem;color:var(--text-2);font-family:var(--font-mono)">16kHz · 16-bit · Mono</div>
+            </div>
+          </div>
+          <div class="stage-item done">
+            <span class="stage-icon">📡</span>
+            <div>
+              <div style="font-weight:500;font-size:0.82rem">WiFi → FastAPI</div>
+              <div style="font-size:0.75rem;color:var(--text-2);font-family:var(--font-mono)">/uploadchunk/ · chunked PCM</div>
+            </div>
+          </div>
+          <div class="stage-item done">
+            <span class="stage-icon">🔤</span>
+            <div>
+              <div style="font-weight:500;font-size:0.82rem">Whisper Small</div>
+              <div style="font-size:0.75rem;color:var(--text-2);font-family:var(--font-mono)">Transcribe → Translate EN</div>
+            </div>
+          </div>
+          <div class="stage-item done">
+            <span class="stage-icon">📝</span>
+            <div>
+              <div style="font-weight:500;font-size:0.82rem">Grammar + Summary</div>
+              <div style="font-size:0.75rem;color:var(--text-2);font-family:var(--font-mono)">T5 correction · BART summary</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <div class="toast-container" id="toast-container"></div>
-  <script type="module" src="index.js"></script>
-  <script>
-    (function ()
-    {
-      const btn = document.getElementById('nav-hamburger');
-      const links = document.getElementById('nav-links');
-      if (!btn || !links) return;
+      <div class="card">
+        <p class="section-label">API Endpoints</p>
+        <div>
+          <div class="endpoint-row"><span class="badge badge-green" style="font-size:0.65rem">POST</span>  <span class="text-mono text-xs text-muted">/uploadfile/</span></div>
+          <div class="endpoint-row"><span class="badge badge-green" style="font-size:0.65rem">POST</span>  <span class="text-mono text-xs text-muted">/uploadraw/</span></div>
+          <div class="endpoint-row"><span class="badge badge-green" style="font-size:0.65rem">POST</span>  <span class="text-mono text-xs text-muted">/uploadchunk/</span></div>
+          <div class="endpoint-row"><span class="badge badge-blue"  style="font-size:0.65rem">GET</span>   <span class="text-mono text-xs text-muted">/lectures/</span></div>
+          <div class="endpoint-row"><span class="badge badge-amber" style="font-size:0.65rem">PATCH</span> <span class="text-mono text-xs text-muted">/lectures/{id}</span></div>
+          <div class="endpoint-row"><span class="badge badge-gray"  style="font-size:0.65rem">DEL</span>   <span class="text-mono text-xs text-muted">/lectures/{id}</span></div>
+        </div>
+        <div class="swagger-link">
+          <a href="https://smartclassroom-production.up.railway.app/docs" target="_blank" class="btn btn-secondary btn-sm">
+            Open Swagger Docs ↗
+          </a>
+        </div>
+      </div>
 
-      btn.addEventListener('click', () =>
-      {
-        const isOpen = links.classList.toggle('open');
-        btn.classList.toggle('open', isOpen);
-        btn.setAttribute('aria-expanded', isOpen);
-      });
+    </div>
+  </div>
 
-      // Close menu when a link is tapped
-      links.querySelectorAll('a').forEach(a =>
-      {
-        a.addEventListener('click', () =>
-        {
-          links.classList.remove('open');
-          btn.classList.remove('open');
-          btn.setAttribute('aria-expanded', 'false');
-        });
-      });
+</main>
 
-      // Close on outside tap
-      document.addEventListener('click', (e) =>
-      {
-        if (!btn.contains(e.target) && !links.contains(e.target))
-        {
-          links.classList.remove('open');
-          btn.classList.remove('open');
-          btn.setAttribute('aria-expanded', 'false');
-        }
-      });
-    })();
-  </script>
+<footer class="footer">
+  <span class="footer-text">SmartClassroom v6 · ESP32 + FastAPI + Whisper</span>
+  <span class="footer-text"><em>smartclassroom-production.up.railway.app</em></span>
+</footer>
+
+<div class="toast-container" id="toast-container"></div>
+<script type="module" src="index.js"></script>
 </body>
-
 </html>
