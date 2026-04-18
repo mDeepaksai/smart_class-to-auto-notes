@@ -8,12 +8,14 @@ import { uploadWavFile, debugAudio, pingServer, showToast, API_BASE } from './Ap
 //  SERVER PING
 // ════════════════════════════════════════════════════════════
 pingServer()
-  .then(() => {
+  .then(() =>
+  {
     document.getElementById('server-status').textContent = 'API online';
     const dot = document.getElementById('status-dot');
     if (dot) dot.style.background = 'var(--green)';
   })
-  .catch(() => {
+  .catch(() =>
+  {
     document.getElementById('server-status').textContent = 'offline';
     const dot = document.getElementById('status-dot');
     if (dot) dot.style.background = 'var(--red)';
@@ -26,20 +28,23 @@ if (footerUrl) footerUrl.textContent = API_BASE;
 // ════════════════════════════════════════════════════════════
 //  TABS
 // ════════════════════════════════════════════════════════════
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
+document.querySelectorAll('.tab-btn').forEach(btn =>
+{
+  btn.addEventListener('click', () =>
+  {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     const isUpload = btn.dataset.tab === 'upload';
     document.getElementById('tab-upload').classList.toggle('hidden', !isUpload);
-    document.getElementById('tab-debug').classList.toggle('hidden',  isUpload);
+    document.getElementById('tab-debug').classList.toggle('hidden', isUpload);
   });
 });
 
 // ════════════════════════════════════════════════════════════
 //  STAGE HELPER
 // ════════════════════════════════════════════════════════════
-function setStage(id, state, sub = '') {
+function setStage(id, state, sub = '')
+{
   const el = document.getElementById(id);
   if (!el) return;
   el.className = `stage-item${state ? ' ' + state : ''}`;
@@ -47,7 +52,8 @@ function setStage(id, state, sub = '') {
   if (subEl && sub) subEl.textContent = sub;
 }
 
-function resetStages() {
+function resetStages()
+{
   ['stage-file', 'stage-upload', 'stage-whisper', 'stage-nlp', 'stage-save']
     .forEach(id => setStage(id, '', 'Waiting…'));
 }
@@ -55,28 +61,31 @@ function resetStages() {
 // ════════════════════════════════════════════════════════════
 //  PROGRESS BAR HELPERS
 // ════════════════════════════════════════════════════════════
-function setProgressUpload(pct) {
-  document.getElementById('progress-pct').textContent  = pct + '%';
-  document.getElementById('progress-bar').style.width  = pct + '%';
+function setProgressUpload(pct)
+{
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-bar').style.width = pct + '%';
   document.getElementById('progress-bar').style.animation = 'none';
-  document.getElementById('progress-bar').style.opacity   = '1';
+  document.getElementById('progress-bar').style.opacity = '1';
 }
 
-function setProgressProcessing() {
+function setProgressProcessing()
+{
   // Hide percentage — server is now processing, no % to show
-  document.getElementById('progress-pct').textContent      = 'Processing…';
-  document.getElementById('progress-label').textContent    = 'Server is transcribing & summarizing… please wait';
-  document.getElementById('progress-bar').style.width      = '100%';
+  document.getElementById('progress-pct').textContent = 'Processing…';
+  document.getElementById('progress-label').textContent = 'Server is transcribing & summarizing… please wait';
+  document.getElementById('progress-bar').style.width = '100%';
   // Pulse the bar so user knows it's still working
-  document.getElementById('progress-bar').style.animation  = 'pulse-bar 1.5s ease-in-out infinite';
+  document.getElementById('progress-bar').style.animation = 'pulse-bar 1.5s ease-in-out infinite';
 }
 
-function setProgressDone() {
-  document.getElementById('progress-pct').textContent     = '✓ Done';
-  document.getElementById('progress-label').textContent   = 'Complete!';
-  document.getElementById('progress-bar').style.width     = '100%';
+function setProgressDone()
+{
+  document.getElementById('progress-pct').textContent = '✓ Done';
+  document.getElementById('progress-label').textContent = 'Complete!';
+  document.getElementById('progress-bar').style.width = '100%';
   document.getElementById('progress-bar').style.animation = 'none';
-  document.getElementById('progress-bar').style.opacity   = '1';
+  document.getElementById('progress-bar').style.opacity = '1';
 }
 
 // ════════════════════════════════════════════════════════════
@@ -85,45 +94,51 @@ function setProgressDone() {
 let selectedFile = null;
 
 const fileInput = document.getElementById('file-input');
-const dropZone  = document.getElementById('drop-zone');
+const dropZone = document.getElementById('drop-zone');
 
-fileInput.addEventListener('change', () => {
+fileInput.addEventListener('change', () =>
+{
   if (fileInput.files[0]) handleFileSelect(fileInput.files[0]);
 });
 
-dropZone.addEventListener('dragover', (e) => {
+dropZone.addEventListener('dragover', (e) =>
+{
   e.preventDefault();
   dropZone.classList.add('drag-over');
 });
 
-dropZone.addEventListener('dragleave', () => {
+dropZone.addEventListener('dragleave', () =>
+{
   dropZone.classList.remove('drag-over');
 });
 
-dropZone.addEventListener('drop', (e) => {
+dropZone.addEventListener('drop', (e) =>
+{
   e.preventDefault();
   dropZone.classList.remove('drag-over');
   const f = e.dataTransfer.files[0];
   if (!f) return;
-  if (!f.name.toLowerCase().endsWith('.wav')) {
+  if (!f.name.toLowerCase().endsWith('.wav'))
+  {
     showToast('Only .wav files are accepted', 'error');
     return;
   }
   handleFileSelect(f);
 });
 
-function handleFileSelect(f) {
+function handleFileSelect(f)
+{
   selectedFile = f;
   const sizeKB = (f.size / 1024).toFixed(1);
   const sizeMB = (f.size / 1024 / 1024).toFixed(2);
 
   document.getElementById('file-name-badge').textContent =
-    `${f.name} · ${f.size < 1024*1024 ? sizeKB + ' KB' : sizeMB + ' MB'}`;
+    `${f.name} · ${f.size < 1024 * 1024 ? sizeKB + ' KB' : sizeMB + ' MB'}`;
   document.getElementById('file-chosen').style.display = 'block';
 
   dropZone.classList.add('has-file');
   dropZone.querySelector('h3').textContent = f.name;
-  dropZone.querySelector('p').textContent  = `${sizeKB} KB · ready to upload`;
+  dropZone.querySelector('p').textContent = `${sizeKB} KB · ready to upload`;
 
   document.getElementById('btn-upload').disabled = false;
   setStage('stage-file', 'done', f.name);
@@ -132,22 +147,23 @@ function handleFileSelect(f) {
 // ════════════════════════════════════════════════════════════
 //  UPLOAD BUTTON
 // ════════════════════════════════════════════════════════════
-document.getElementById('btn-upload').addEventListener('click', async () => {
-  const title   = document.getElementById('up-title').value.trim();
+document.getElementById('btn-upload').addEventListener('click', async () =>
+{
+  const title = document.getElementById('up-title').value.trim();
   const subject = document.getElementById('up-subject').value.trim();
-  const lang    = document.getElementById('up-language').value;
-  const prompt  = document.getElementById('up-prompt').value.trim();
+  const lang = document.getElementById('up-language').value;
+  const prompt = document.getElementById('up-prompt').value.trim();
 
   if (!selectedFile) { showToast('Please select a WAV file', 'error'); return; }
-  if (!title)        { showToast('Please enter a title', 'error');      return; }
-  if (!subject)      { showToast('Please enter a subject', 'error');    return; }
+  if (!title) { showToast('Please enter a title', 'error'); return; }
+  if (!subject) { showToast('Please enter a subject', 'error'); return; }
 
   const btn = document.getElementById('btn-upload');
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Uploading…';
 
   resetStages();
-  setStage('stage-file',   'done',   selectedFile.name);
+  setStage('stage-file', 'done', selectedFile.name);
   setStage('stage-upload', 'active', 'Sending to server…');
 
   document.getElementById('progress-wrap').classList.remove('hidden');
@@ -155,18 +171,22 @@ document.getElementById('btn-upload').addEventListener('click', async () => {
   document.getElementById('progress-label').textContent = 'Uploading…';
   setProgressUpload(0);
 
-  try {
+  try
+  {
     const result = await uploadWavFile(
       { file: selectedFile, title, subject, language: lang, initial_prompt: prompt },
-      (pct) => {
-        if (pct < 100) {
+      (pct) =>
+      {
+        if (pct < 100)
+        {
           // ── Still uploading — show real % ──
           setProgressUpload(pct);
-        } else {
+        } else
+        {
           // ── Upload done — server now processing ──
-          setStage('stage-upload',  'done',   'Uploaded ✓');
+          setStage('stage-upload', 'done', 'Uploaded ✓');
           setStage('stage-whisper', 'active', 'Transcribing… (may take 1–2 min)');
-          setStage('stage-nlp',     'active', 'Waiting for NLP pipeline…');
+          setStage('stage-nlp', 'active', 'Waiting for NLP pipeline…');
           setProgressProcessing();  // pulse bar — no fake %
         }
       }
@@ -174,8 +194,8 @@ document.getElementById('btn-upload').addEventListener('click', async () => {
 
     // ── Server responded — all done ──
     setStage('stage-whisper', 'done', 'Transcribed ✓');
-    setStage('stage-nlp',     'done', 'Summarized ✓');
-    setStage('stage-save',    'done', `Saved · ID #${result.id}`);
+    setStage('stage-nlp', 'done', 'Summarized ✓');
+    setStage('stage-save', 'done', `Saved · ID #${result.id}`);
     setProgressDone();
 
     document.getElementById('result-card').classList.remove('hidden');
@@ -201,12 +221,14 @@ document.getElementById('btn-upload').addEventListener('click', async () => {
     document.getElementById('result-view').href = `Lecturedetail.html?id=${result.id}`;
     showToast('Lecture saved successfully!', 'success');
 
-  } catch (err) {
+  } catch (err)
+  {
     setStage('stage-upload', 'error', err.message);
     document.getElementById('progress-bar').style.animation = 'none';
     showToast('Upload failed: ' + err.message, 'error');
 
-  } finally {
+  } finally
+  {
     btn.disabled = false;
     btn.innerHTML = '↑ Upload &amp; Transcribe';
     document.getElementById('progress-wrap').classList.add('hidden');
@@ -216,24 +238,25 @@ document.getElementById('btn-upload').addEventListener('click', async () => {
 // ════════════════════════════════════════════════════════════
 //  UPLOAD ANOTHER
 // ════════════════════════════════════════════════════════════
-document.getElementById('result-another').addEventListener('click', () => {
+document.getElementById('result-another').addEventListener('click', () =>
+{
   selectedFile = null;
   fileInput.value = '';
 
   document.getElementById('file-chosen').style.display = 'none';
-  document.getElementById('btn-upload').disabled       = true;
+  document.getElementById('btn-upload').disabled = true;
   document.getElementById('result-card').classList.add('hidden');
 
   dropZone.classList.remove('has-file');
   dropZone.querySelector('h3').textContent = 'Drop WAV file here';
-  dropZone.querySelector('p').textContent  = 'or click to browse · .wav files only';
+  dropZone.querySelector('p').textContent = 'or click to browse · .wav files only';
 
-  document.getElementById('up-title').value   = '';
+  document.getElementById('up-title').value = '';
   document.getElementById('up-subject').value = '';
-  document.getElementById('up-prompt').value  = '';
+  document.getElementById('up-prompt').value = '';
   document.getElementById('progress-label').textContent = 'Uploading…';
-  document.getElementById('progress-pct').textContent   = '0%';
-  document.getElementById('progress-bar').style.width   = '0%';
+  document.getElementById('progress-pct').textContent = '0%';
+  document.getElementById('progress-bar').style.width = '0%';
   document.getElementById('progress-bar').style.animation = 'none';
 
   resetStages();
@@ -244,38 +267,42 @@ document.getElementById('result-another').addEventListener('click', () => {
 // ════════════════════════════════════════════════════════════
 let debugFile = null;
 
-document.getElementById('debug-file-input').addEventListener('change', (e) => {
+document.getElementById('debug-file-input').addEventListener('change', (e) =>
+{
   debugFile = e.target.files[0];
-  if (debugFile) {
+  if (debugFile)
+  {
     document.getElementById('debug-file-badge').textContent = debugFile.name;
     document.getElementById('debug-file-chosen').style.display = 'block';
     document.getElementById('btn-debug').disabled = false;
   }
 });
 
-document.getElementById('btn-debug').addEventListener('click', async () => {
+document.getElementById('btn-debug').addEventListener('click', async () =>
+{
   if (!debugFile) return;
 
-  const btn  = document.getElementById('btn-debug');
+  const btn = document.getElementById('btn-debug');
   const body = document.getElementById('debug-result-body');
 
-  btn.disabled  = true;
+  btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Analysing…';
   body.innerHTML = `<div class="loading-overlay"><div class="spinner"></div> Running Whisper…</div>`;
 
-  try {
+  try
+  {
     const r = await debugAudio({
-      file:            debugFile,
-      sample_rate:     parseInt(document.getElementById('debug-samplerate').value) || 16000,
-      channels:        parseInt(document.getElementById('debug-channels').value)   || 1,
-      bits_per_sample: parseInt(document.getElementById('debug-bits').value)       || 16,
-      language:        document.getElementById('debug-language').value,
-      initial_prompt:  document.getElementById('debug-prompt').value.trim(),
+      file: debugFile,
+      sample_rate: parseInt(document.getElementById('debug-samplerate').value) || 16000,
+      channels: parseInt(document.getElementById('debug-channels').value) || 1,
+      bits_per_sample: parseInt(document.getElementById('debug-bits').value) || 16,
+      language: document.getElementById('debug-language').value,
+      initial_prompt: document.getElementById('debug-prompt').value.trim(),
     });
 
     const qClass = r.audio_quality.includes('GOOD') ? 'badge-green'
-                 : r.audio_quality.includes('LOW')  ? 'badge-amber'
-                 : 'badge-gray';
+      : r.audio_quality.includes('LOW') ? 'badge-amber'
+        : 'badge-gray';
 
     body.innerHTML = `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem">
@@ -303,12 +330,14 @@ document.getElementById('btn-debug').addEventListener('click', async () => {
     `;
     showToast('Analysis complete', 'success');
 
-  } catch (err) {
+  } catch (err)
+  {
     body.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>${escHtml(err.message)}</p></div>`;
     showToast('Analysis failed: ' + err.message, 'error');
 
-  } finally {
-    btn.disabled    = false;
+  } finally
+  {
+    btn.disabled = false;
     btn.textContent = '🔍 Analyse Audio';
   }
 });
@@ -316,7 +345,8 @@ document.getElementById('btn-debug').addEventListener('click', async () => {
 // ════════════════════════════════════════════════════════════
 //  UTILITY
 // ════════════════════════════════════════════════════════════
-function escHtml(str) {
+function escHtml(str)
+{
   return String(str || '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')

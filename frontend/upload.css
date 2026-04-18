@@ -1,10 +1,12 @@
-/* ── Upload page specific styles ─────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   upload.css — Upload page specific styles (fully responsive)
+═══════════════════════════════════════════════════════════ */
 
-/* Drop zone */
+/* ── Drop zone ──────────────────────────────────────────── */
 .upload-zone {
   position: relative;
-  border: 2px dashed var(--border-hover);
-  border-radius: var(--radius-lg);
+  border: 2px dashed var(--border-hover, rgba(99, 120, 200, 0.3));
+  border-radius: var(--radius-lg, 14px);
   padding: 3rem 2rem;
   text-align: center;
   cursor: pointer;
@@ -25,9 +27,9 @@
 
 .upload-zone:hover,
 .upload-zone.drag-over {
-  border-color: var(--accent-dim);
-  background: var(--accent-glow);
-  box-shadow: 0 0 0 4px rgba(245,166,35,0.08);
+  border-color: var(--accent-dim, rgba(108, 141, 255, 0.5));
+  background: var(--accent-glow, rgba(108, 141, 255, 0.04));
+  box-shadow: 0 0 0 4px rgba(245, 166, 35, 0.08);
 }
 
 .upload-zone.drag-over .upload-icon {
@@ -35,8 +37,8 @@
 }
 
 .upload-zone.has-file {
-  border-color: rgba(74,222,128,0.4);
-  background: var(--green-dim);
+  border-color: rgba(74, 222, 128, 0.4);
+  background: var(--green-dim, rgba(52, 211, 153, 0.04));
 }
 
 .upload-icon {
@@ -47,11 +49,11 @@
 }
 
 .upload-zone h3 {
-  font-family: var(--font-display);
+  font-family: var(--font-main);
   font-size: 1.05rem;
   font-weight: 700;
   margin-bottom: 0.3rem;
-  color: var(--text);
+  color: var(--text-1);
 }
 
 .upload-zone p {
@@ -59,7 +61,7 @@
   color: var(--text-2);
 }
 
-/* Stage items */
+/* ── Stage items ────────────────────────────────────────── */
 .upload-stages {
   display: flex;
   flex-direction: column;
@@ -83,7 +85,9 @@
 .stage-item::before {
   content: '';
   position: absolute;
-  left: 0; top: 0; bottom: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
   width: 3px;
   border-radius: 3px 0 0 3px;
   background: var(--border);
@@ -91,9 +95,10 @@
 }
 
 .stage-item.active {
-  border-color: var(--accent-dim);
-  background: var(--accent-glow);
+  border-color: var(--accent-dim, rgba(108, 141, 255, 0.3));
+  background: var(--accent-glow, rgba(108, 141, 255, 0.04));
 }
+
 .stage-item.active::before {
   background: var(--accent);
   box-shadow: 0 0 8px var(--accent);
@@ -101,29 +106,39 @@
 }
 
 .stage-item.done {
-  border-color: rgba(74,222,128,0.25);
-  background: var(--green-dim);
+  border-color: rgba(74, 222, 128, 0.25);
+  background: var(--green-dim, rgba(52, 211, 153, 0.04));
 }
+
 .stage-item.done::before {
   background: var(--green);
   box-shadow: 0 0 8px var(--green);
 }
 
 .stage-item.error {
-  border-color: rgba(248,113,113,0.25);
-  background: var(--red-dim);
+  border-color: rgba(248, 113, 113, 0.25);
+  background: var(--red-dim, rgba(248, 113, 113, 0.04));
 }
+
 .stage-item.error::before {
   background: var(--red);
 }
 
 @keyframes pulseBar {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.3; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
 }
 
 .stage-icon {
-  width: 28px; height: 28px;
+  width: 28px;
+  height: 28px;
   background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: 7px;
@@ -133,7 +148,7 @@
   flex-shrink: 0;
 }
 
-/* Progress bar */
+/* ── Progress bar ───────────────────────────────────────── */
 .progress-wrap {
   background: var(--bg-3);
   border-radius: 99px;
@@ -146,30 +161,132 @@
   background: linear-gradient(90deg, var(--accent), #f0b84a);
   border-radius: 99px;
   transition: width 0.35s ease;
-  box-shadow: 0 0 10px rgba(245,166,35,0.4);
+  box-shadow: 0 0 10px rgba(245, 166, 35, 0.4);
 }
 
-/* Result card success state */
+@keyframes pulse-bar {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* ── Result card ────────────────────────────────────────── */
 #result-card {
-  border-color: rgba(74,222,128,0.3);
-  background: linear-gradient(135deg, var(--bg-2), rgba(74,222,128,0.04));
+  border-color: rgba(74, 222, 128, 0.3);
+  background: linear-gradient(135deg, var(--bg-2), rgba(74, 222, 128, 0.04));
 }
 
-/* Pipeline info accent text */
+/* ── Pipeline info accent text ──────────────────────────── */
 .text-accent {
   color: var(--accent);
   font-weight: 600;
   font-family: var(--font-mono);
 }
 
-/* Responsive */
-@media (max-width: 680px) {
-  #tab-upload > div,
-  #tab-debug > div {
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════ */
+
+/* ── Tablet ─ 900px ────────────────────────────────────── */
+@media (max-width: 900px) {
+
+  /* Stack upload and debug two-col grids */
+  #tab-upload>div,
+  #tab-debug>div {
     grid-template-columns: 1fr !important;
   }
+
+  .upload-zone {
+    padding: 2rem 1.5rem;
+  }
+
+  .upload-icon {
+    font-size: 2.4rem;
+  }
 }
-@keyframes pulse-bar {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.3; }
+
+/* ── Mobile ─ 600px ────────────────────────────────────── */
+@media (max-width: 600px) {
+  .upload-zone {
+    padding: 1.75rem 1rem;
+  }
+
+  .upload-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .upload-zone h3 {
+    font-size: 0.95rem;
+  }
+
+  /* Debug audio fields 3-col → 1-col */
+  #tab-debug .card div[style*="grid-template-columns:1fr 1fr 1fr"],
+  #tab-debug .card>div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Stage items more compact */
+  .stage-item {
+    padding: 8px 10px;
+    gap: 8px;
+    font-size: 0.8rem;
+  }
+
+  .stage-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 0.8rem;
+  }
+
+  /* Result card actions stack */
+  #result-card>div:last-child {
+    flex-direction: column;
+  }
+
+  #result-card .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Upload button stays full-width (already set inline, reinforce) */
+  #btn-upload,
+  #btn-debug {
+    font-size: 0.9rem;
+  }
+
+  /* Progress label truncate */
+  #progress-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 65%;
+  }
+}
+
+/* ── Tiny ─ 380px ──────────────────────────────────────── */
+@media (max-width: 380px) {
+  .upload-zone {
+    padding: 1.25rem 0.75rem;
+  }
+
+  .upload-icon {
+    font-size: 1.75rem;
+  }
+
+  .stage-item {
+    padding: 7px 8px;
+    gap: 7px;
+  }
+
+  /* Pipeline info font size */
+  #status-card p {
+    font-size: 0.75rem;
+  }
 }

@@ -15,14 +15,24 @@
       <div class="brand-icon">🎓</div>
       Smart<span>Classroom</span>
     </a>
-    <ul class="nav-links">
+
+    <!-- Hamburger (shown on mobile, hidden on desktop via responsive.css) -->
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <!-- Nav links — same as before, responsive.css handles open/close display -->
+    <ul class="nav-links" id="nav-links">
       <li><a href="index.html">◈ <span>Dashboard</span></a></li>
-      <li><a href="lectures.html" class="active">≡ <span>Lectures</span></a></li>
+      <li><a href="lectures.html">≡ <span>Lectures</span></a></li>
       <li><a href="Upload.html">↑ <span>Upload</span></a></li>
     </ul>
+
     <div class="nav-status">
       <span class="status-dot"></span>
-      <span id="server-status">API</span>
+      <span id="server-status">checking…</span>
     </div>
   </nav>
 
@@ -112,7 +122,8 @@
         <button class="modal-close" id="modal-close">✕</button>
       </div>
       <div class="modal-body">
-        <p style="color:var(--text-2)">Are you sure you want to delete <strong id="delete-title" style="color:var(--text)"></strong>?</p>
+        <p style="color:var(--text-2)">Are you sure you want to delete <strong id="delete-title"
+            style="color:var(--text)"></strong>?</p>
         <p class="text-sm text-muted mt-1">This action cannot be undone.</p>
       </div>
       <div class="modal-footer">
@@ -130,7 +141,8 @@
         <button class="modal-close" id="delete-all-close">✕</button>
       </div>
       <div class="modal-body">
-        <p style="color:var(--text-2)">Are you sure you want to delete <strong style="color:var(--text)">all <span id="delete-all-count"></span> lectures</strong>?</p>
+        <p style="color:var(--text-2)">Are you sure you want to delete <strong style="color:var(--text)">all <span
+              id="delete-all-count"></span> lectures</strong>?</p>
         <p class="text-sm text-muted mt-1">This action cannot be undone.</p>
       </div>
       <div class="modal-footer">
@@ -141,14 +153,51 @@
   </div>
 
   <script type="module">
+    (function ()
+    {
+      const btn = document.getElementById('nav-hamburger');
+      const links = document.getElementById('nav-links');
+      if (!btn || !links) return;
+
+      btn.addEventListener('click', () =>
+      {
+        const isOpen = links.classList.toggle('open');
+        btn.classList.toggle('open', isOpen);
+        btn.setAttribute('aria-expanded', isOpen);
+      });
+
+      // Close menu when a link is tapped
+      links.querySelectorAll('a').forEach(a =>
+      {
+        a.addEventListener('click', () =>
+        {
+          links.classList.remove('open');
+          btn.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      });
+
+      // Close on outside tap
+      document.addEventListener('click', (e) =>
+      {
+        if (!btn.contains(e.target) && !links.contains(e.target))
+        {
+          links.classList.remove('open');
+          btn.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    })();
     import { getLectures, deleteLecture, formatDate, truncate, showToast } from './Api.js';
 
     let allLectures = [];
     let currentView = 'list';
     let deletingId = null;
 
-    async function loadLectures() {
-      try {
+    async function loadLectures()
+    {
+      try
+      {
         allLectures = await getLectures();
         document.getElementById('server-status').textContent = 'API online';
 
@@ -156,14 +205,16 @@
         const subjects = [...new Set(allLectures.map(l => l.subject).filter(Boolean))].sort();
         const sel = document.getElementById('filter-subject');
         while (sel.options.length > 1) sel.remove(1);
-        subjects.forEach(s => {
+        subjects.forEach(s =>
+        {
           const o = document.createElement('option');
           o.value = s; o.textContent = s;
           sel.appendChild(o);
         });
 
         renderLectures();
-      } catch (err) {
+      } catch (err)
+      {
         document.getElementById('lectures-list').innerHTML = `
           <div class="empty-state">
             <div class="empty-icon">⚠️</div>
@@ -174,12 +225,14 @@
       }
     }
 
-    function getFiltered() {
+    function getFiltered()
+    {
       const q = document.getElementById('search-input').value.toLowerCase().trim();
       const subject = document.getElementById('filter-subject').value;
       const sort = document.getElementById('sort-order').value;
 
-      let list = allLectures.filter(l => {
+      let list = allLectures.filter(l =>
+      {
         const matchQ = !q ||
           (l.title || '').toLowerCase().includes(q) ||
           (l.subject || '').toLowerCase().includes(q) ||
@@ -195,7 +248,8 @@
       return list;
     }
 
-    function renderLectures() {
+    function renderLectures()
+    {
       const list = getFiltered();
       const count = allLectures.length;
       document.getElementById('lecture-count').textContent =
@@ -206,9 +260,11 @@
       else renderTableView(list);
     }
 
-    function renderListView(list) {
+    function renderListView(list)
+    {
       const container = document.getElementById('lectures-list');
-      if (list.length === 0) {
+      if (list.length === 0)
+      {
         container.innerHTML = `
           <div class="empty-state">
             <div class="empty-icon">📚</div>
@@ -219,7 +275,8 @@
       }
 
       container.innerHTML = '';
-      list.forEach(lecture => {
+      list.forEach(lecture =>
+      {
         const card = document.createElement('div');
         card.className = 'lecture-card';
         card.innerHTML = `
@@ -242,9 +299,11 @@
       container.addEventListener('click', handleCardClick);
     }
 
-    function renderTableView(list) {
+    function renderTableView(list)
+    {
       const tbody = document.getElementById('lectures-table-body');
-      if (list.length === 0) {
+      if (list.length === 0)
+      {
         tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-3)">No lectures found</td></tr>`;
         return;
       }
@@ -263,61 +322,74 @@
           </td>
         </tr>`).join('');
 
-      tbody.querySelectorAll('[data-action="delete"]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+      tbody.querySelectorAll('[data-action="delete"]').forEach(btn =>
+      {
+        btn.addEventListener('click', (e) =>
+        {
           e.stopPropagation();
           openDeleteModal(btn.dataset.id, btn.dataset.title);
         });
       });
     }
 
-    function handleCardClick(e) {
+    function handleCardClick(e)
+    {
       const btn = e.target.closest('[data-action]');
-      if (!btn) {
+      if (!btn)
+      {
         const card = e.target.closest('.lecture-card');
-        if (card) {
+        if (card)
+        {
           const id = card.querySelector('[data-id]')?.dataset.id;
           if (id) window.location.href = `Lecturedetail.html?id=${id}`;
         }
         return;
       }
-      if (btn.dataset.action === 'view') {
+      if (btn.dataset.action === 'view')
+      {
         window.location.href = `Lecturedetail.html?id=${btn.dataset.id}`;
-      } else if (btn.dataset.action === 'delete') {
+      } else if (btn.dataset.action === 'delete')
+      {
         openDeleteModal(btn.dataset.id, btn.dataset.title);
       }
     }
 
     // ── Single Delete Modal ───────────────────────────────
-    function openDeleteModal(id, title) {
+    function openDeleteModal(id, title)
+    {
       deletingId = id;
       document.getElementById('delete-title').textContent = title;
       document.getElementById('delete-modal').classList.remove('hidden');
     }
 
-    function closeModal() {
+    function closeModal()
+    {
       document.getElementById('delete-modal').classList.add('hidden');
       deletingId = null;
     }
 
     document.getElementById('modal-close').addEventListener('click', closeModal);
     document.getElementById('modal-cancel').addEventListener('click', closeModal);
-    document.getElementById('delete-modal').addEventListener('click', (e) => {
+    document.getElementById('delete-modal').addEventListener('click', (e) =>
+    {
       if (e.target === e.currentTarget) closeModal();
     });
 
-    document.getElementById('modal-confirm').addEventListener('click', async () => {
+    document.getElementById('modal-confirm').addEventListener('click', async () =>
+    {
       if (!deletingId) return;
       const btn = document.getElementById('modal-confirm');
       btn.disabled = true;
       btn.textContent = 'Deleting…';
-      try {
+      try
+      {
         await deleteLecture(deletingId);
         allLectures = allLectures.filter(l => l.id != deletingId);
         renderLectures();
         closeModal();
         showToast('Lecture deleted', 'success');
-      } catch (err) {
+      } catch (err)
+      {
         showToast(err.message, 'error');
         btn.disabled = false;
         btn.textContent = 'Delete';
@@ -325,8 +397,10 @@
     });
 
     // ── Delete All Modal ──────────────────────────────────
-    document.getElementById('btn-delete-all').addEventListener('click', () => {
-      if (allLectures.length === 0) {
+    document.getElementById('btn-delete-all').addEventListener('click', () =>
+    {
+      if (allLectures.length === 0)
+      {
         showToast('No lectures to delete', 'error');
         return;
       }
@@ -334,27 +408,32 @@
       document.getElementById('delete-all-modal').classList.remove('hidden');
     });
 
-    function closeDeleteAllModal() {
+    function closeDeleteAllModal()
+    {
       document.getElementById('delete-all-modal').classList.add('hidden');
     }
 
     document.getElementById('delete-all-close').addEventListener('click', closeDeleteAllModal);
     document.getElementById('delete-all-cancel').addEventListener('click', closeDeleteAllModal);
-    document.getElementById('delete-all-modal').addEventListener('click', (e) => {
+    document.getElementById('delete-all-modal').addEventListener('click', (e) =>
+    {
       if (e.target === e.currentTarget) closeDeleteAllModal();
     });
 
-    document.getElementById('delete-all-confirm').addEventListener('click', async () => {
+    document.getElementById('delete-all-confirm').addEventListener('click', async () =>
+    {
       const btn = document.getElementById('delete-all-confirm');
       btn.disabled = true;
       btn.textContent = 'Deleting…';
-      try {
+      try
+      {
         await Promise.all(allLectures.map(l => deleteLecture(l.id)));
         allLectures = [];
         renderLectures();
         closeDeleteAllModal();
         showToast('All lectures deleted', 'success');
-      } catch (err) {
+      } catch (err)
+      {
         showToast(err.message, 'error');
         btn.disabled = false;
         btn.textContent = 'Delete All';
@@ -362,7 +441,8 @@
     });
 
     // ── View toggle ───────────────────────────────────────
-    document.getElementById('view-list').addEventListener('click', () => {
+    document.getElementById('view-list').addEventListener('click', () =>
+    {
       currentView = 'list';
       document.getElementById('view-list-container').classList.remove('hidden');
       document.getElementById('view-table-container').classList.add('hidden');
@@ -371,7 +451,8 @@
       renderLectures();
     });
 
-    document.getElementById('view-table').addEventListener('click', () => {
+    document.getElementById('view-table').addEventListener('click', () =>
+    {
       currentView = 'table';
       document.getElementById('view-table-container').classList.remove('hidden');
       document.getElementById('view-list-container').classList.add('hidden');
@@ -384,7 +465,8 @@
     document.getElementById('search-input').addEventListener('input', renderLectures);
     document.getElementById('filter-subject').addEventListener('change', renderLectures);
     document.getElementById('sort-order').addEventListener('change', renderLectures);
-    document.getElementById('btn-refresh').addEventListener('click', () => {
+    document.getElementById('btn-refresh').addEventListener('click', () =>
+    {
       document.getElementById('lectures-list').innerHTML = '<div class="loading-overlay"><div class="spinner"></div> Refreshing…</div>';
       allLectures = [];
       loadLectures();

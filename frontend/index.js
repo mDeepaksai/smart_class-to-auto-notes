@@ -3,46 +3,55 @@
 // ═══════════════════════════════════════════════════════════
 import { getLectures, pingServer, formatDate, truncate, showToast } from './Api.js';
 
-async function init() {
+async function init()
+{
   await checkServer();
   await loadLectures();
 }
 
 // ── Server ping ──────────────────────────────────────────
-async function checkServer() {
-  try {
+async function checkServer()
+{
+  try
+  {
     await pingServer();
     document.getElementById('server-status').textContent = 'API online';
-    document.getElementById('stat-api').textContent      = '✓ Online';
-    document.getElementById('stat-api').style.color      = 'var(--green)';
-  } catch {
+    document.getElementById('stat-api').textContent = '✓ Online';
+    document.getElementById('stat-api').style.color = 'var(--green)';
+  } catch
+  {
     document.getElementById('server-status').textContent = 'offline';
-    document.getElementById('stat-api').textContent      = '✕ Offline';
-    document.getElementById('stat-api').style.color      = 'var(--red)';
+    document.getElementById('stat-api').textContent = '✕ Offline';
+    document.getElementById('stat-api').style.color = 'var(--red)';
     document.querySelector('.status-dot').style.background = 'var(--red)';
   }
 }
 
 // ── Load lectures & populate dashboard ──────────────────
-async function loadLectures() {
-  try {
+async function loadLectures()
+{
+  try
+  {
     const lectures = await getLectures();
 
     // Stats
-    document.getElementById('stat-total').textContent    = lectures.length;
+    document.getElementById('stat-total').textContent = lectures.length;
     const subjects = new Set(lectures.map(l => l.subject));
     document.getElementById('stat-subjects').textContent = subjects.size;
 
-    if (lectures.length > 0) {
+    if (lectures.length > 0)
+    {
       const latest = lectures[0];
-      document.getElementById('stat-latest').textContent     = truncate(latest.title, 18);
+      document.getElementById('stat-latest').textContent = truncate(latest.title, 18);
       document.getElementById('stat-latest-sub').textContent = formatDate(latest.created_at);
-    } else {
+    } else
+    {
       document.getElementById('stat-latest').textContent = '—';
     }
 
     renderRecentLectures(lectures.slice(0, 6));
-  } catch (err) {
+  } catch (err)
+  {
     document.getElementById('recent-list').innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">⚠️</div>
@@ -54,10 +63,12 @@ async function loadLectures() {
 }
 
 // ── Render recent lecture cards ──────────────────────────
-function renderRecentLectures(lectures) {
+function renderRecentLectures(lectures)
+{
   const container = document.getElementById('recent-list');
 
-  if (lectures.length === 0) {
+  if (lectures.length === 0)
+  {
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">🎙️</div>
@@ -72,7 +83,8 @@ function renderRecentLectures(lectures) {
   wrap.className = 'stagger';
   wrap.style.cssText = 'display:flex;flex-direction:column;gap:10px';
 
-  lectures.forEach(lecture => {
+  lectures.forEach(lecture =>
+  {
     const card = document.createElement('div');
     card.className = 'lecture-card';
     card.innerHTML = `
@@ -89,7 +101,8 @@ function renderRecentLectures(lectures) {
       </div>`;
 
     // ✅ FIX: was 'lecture_detail.html' — corrected to match the actual filename
-    card.addEventListener('click', () => {
+    card.addEventListener('click', () =>
+    {
       window.location.href = `Lecturedetail.html?id=${lecture.id}`;
     });
 

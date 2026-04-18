@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,292 +8,335 @@
   <link rel="stylesheet" href="Style.css">
   <link rel="stylesheet" href="upload.css">
 </head>
+
 <body>
 
-<!-- ── NAVBAR ─────────────────────────────────────────── -->
-<nav class="navbar">
-  <a href="index.html" class="nav-brand">
-    <div class="brand-icon">🎓</div>
-    Smart<span>Classroom</span>
-  </a>
-  <ul class="nav-links">
-    <li><a href="index.html">◈ <span>Dashboard</span></a></li>
-    <li><a href="lectures.html">≡ <span>Lectures</span></a></li>
-    <li><a href="Upload.html" class="active">↑ <span>Upload</span></a></li>
-  </ul>
-  <div class="nav-status">
-    <span class="status-dot" id="status-dot"></span>
-    <span id="server-status">Checking...</span>
-  </div>
-</nav>
+  <!-- ── NAVBAR ─────────────────────────────────────────── -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">🎓</div>
+      Smart<span>Classroom</span>
+    </a>
 
-<!-- ── PAGE ───────────────────────────────────────────── -->
-<main class="page-sm">
+    <!-- Hamburger (shown on mobile, hidden on desktop via responsive.css) -->
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
 
-  <div class="breadcrumb fade-in">
-    <a href="index.html">Dashboard</a>
-    <span class="sep">›</span>
-    <span>Upload WAV</span>
-  </div>
+    <!-- Nav links — same as before, responsive.css handles open/close display -->
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">◈ <span>Dashboard</span></a></li>
+      <li><a href="lectures.html">≡ <span>Lectures</span></a></li>
+      <li><a href="Upload.html">↑ <span>Upload</span></a></li>
+    </ul>
 
-  <div class="page-header fade-in">
-    <div class="page-header-left">
-      <h1>Upload <em>Audio</em></h1>
-      <p>Manually upload a WAV file for transcription and note generation</p>
+    <div class="nav-status">
+      <span class="status-dot"></span>
+      <span id="server-status">checking…</span>
     </div>
-  </div>
+  </nav>
 
-  <!-- ── TABS ──────────────────────────────────────────── -->
-  <div class="tabs fade-in">
-    <button class="tab-btn active" data-tab="upload">↑ Upload Lecture</button>
-    <button class="tab-btn" data-tab="debug">🔍 Debug Audio</button>
-  </div>
+  <!-- ── PAGE ───────────────────────────────────────────── -->
+  <main class="page-sm">
 
-  <!-- ══════════════════════════════════════════════════
+    <div class="breadcrumb fade-in">
+      <a href="index.html">Dashboard</a>
+      <span class="sep">›</span>
+      <span>Upload WAV</span>
+    </div>
+
+    <div class="page-header fade-in">
+      <div class="page-header-left">
+        <h1>Upload <em>Audio</em></h1>
+        <p>Manually upload a WAV file for transcription and note generation</p>
+      </div>
+    </div>
+
+    <!-- ── TABS ──────────────────────────────────────────── -->
+    <div class="tabs fade-in">
+      <button class="tab-btn active" data-tab="upload">↑ Upload Lecture</button>
+      <button class="tab-btn" data-tab="debug">🔍 Debug Audio</button>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
        UPLOAD TAB
   ══════════════════════════════════════════════════ -->
-  <div id="tab-upload">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start">
+    <div id="tab-upload">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start">
 
-      <!-- LEFT: Form -->
-      <div class="fade-in">
+        <!-- LEFT: Form -->
+        <div class="fade-in">
 
-        <!-- Drop zone -->
-        <div class="upload-zone mb-3" id="drop-zone">
-          <input type="file" id="file-input" accept=".wav,audio/wav,audio/wave,audio/x-wav" />
-          <div class="upload-icon">🎵</div>
-          <h3>Drop WAV file here</h3>
-          <p>or click to browse · .wav files only</p>
-          <div id="file-chosen" style="margin-top:0.75rem;display:none">
-            <span class="badge badge-green" id="file-name-badge"></span>
+          <!-- Drop zone -->
+          <div class="upload-zone mb-3" id="drop-zone">
+            <input type="file" id="file-input" accept=".wav,audio/wav,audio/wave,audio/x-wav" />
+            <div class="upload-icon">🎵</div>
+            <h3>Drop WAV file here</h3>
+            <p>or click to browse · .wav files only</p>
+            <div id="file-chosen" style="margin-top:0.75rem;display:none">
+              <span class="badge badge-green" id="file-name-badge"></span>
+            </div>
+          </div>
+
+          <!-- Metadata form -->
+          <div class="card">
+            <p class="section-label">Lecture Details</p>
+
+            <div class="form-group">
+              <label class="form-label">Title *</label>
+              <input type="text" class="form-input" id="up-title" placeholder="e.g. Introduction to Thermodynamics" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Subject *</label>
+              <input type="text" class="form-input" id="up-subject" placeholder="e.g. Physics" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Speaking Language</label>
+              <select class="form-select" id="up-language">
+                <option value="ta">Tamil (ta)</option>
+                <option value="hi">Hindi (hi)</option>
+                <option value="te">Telugu (te)</option>
+                <option value="kn">Kannada (kn)</option>
+                <option value="ml">Malayalam (ml)</option>
+                <option value="en">English (en)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                Keywords / Initial Prompt
+                <span style="font-size:0.68rem;color:var(--text-3);margin-left:4px">
+                  (optional — helps Whisper accuracy)
+                </span>
+              </label>
+              <input type="text" class="form-input" id="up-prompt"
+                placeholder="e.g. Deepak Sai, Boyle's Law, Thermodynamics" />
+              <p class="text-xs text-muted mt-1">Names and terms that Whisper might mishear</p>
+            </div>
+
+            <button class="btn btn-primary" id="btn-upload" style="width:100%;justify-content:center" disabled>
+              ↑ Upload &amp; Transcribe
+            </button>
           </div>
         </div>
 
-        <!-- Metadata form -->
-        <div class="card">
-          <p class="section-label">Lecture Details</p>
+        <!-- RIGHT: Status + pipeline -->
+        <div class="stagger">
 
-          <div class="form-group">
-            <label class="form-label">Title *</label>
-            <input type="text" class="form-input" id="up-title"
-              placeholder="e.g. Introduction to Thermodynamics" />
-          </div>
+          <!-- Stage tracker -->
+          <div class="card mb-2" id="status-card">
+            <p class="section-label">Upload Status</p>
 
-          <div class="form-group">
-            <label class="form-label">Subject *</label>
-            <input type="text" class="form-input" id="up-subject"
-              placeholder="e.g. Physics" />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Speaking Language</label>
-            <select class="form-select" id="up-language">
-              <option value="ta">Tamil (ta)</option>
-              <option value="hi">Hindi (hi)</option>
-              <option value="te">Telugu (te)</option>
-              <option value="kn">Kannada (kn)</option>
-              <option value="ml">Malayalam (ml)</option>
-              <option value="en">English (en)</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">
-              Keywords / Initial Prompt
-              <span style="font-size:0.68rem;color:var(--text-3);margin-left:4px">
-                (optional — helps Whisper accuracy)
-              </span>
-            </label>
-            <input type="text" class="form-input" id="up-prompt"
-              placeholder="e.g. Deepak Sai, Boyle's Law, Thermodynamics" />
-            <p class="text-xs text-muted mt-1">Names and terms that Whisper might mishear</p>
-          </div>
-
-          <button class="btn btn-primary" id="btn-upload"
-            style="width:100%;justify-content:center" disabled>
-            ↑ Upload &amp; Transcribe
-          </button>
-        </div>
-      </div>
-
-      <!-- RIGHT: Status + pipeline -->
-      <div class="stagger">
-
-        <!-- Stage tracker -->
-        <div class="card mb-2" id="status-card">
-          <p class="section-label">Upload Status</p>
-
-          <div class="upload-stages" id="stage-list">
-            <div class="stage-item" id="stage-file">
-              <span class="stage-icon">📄</span>
-              <div>
-                <div style="font-weight:500;font-size:0.85rem">Select WAV file</div>
-                <div id="stage-file-sub" class="text-mono text-xs text-muted">Waiting…</div>
+            <div class="upload-stages" id="stage-list">
+              <div class="stage-item" id="stage-file">
+                <span class="stage-icon">📄</span>
+                <div>
+                  <div style="font-weight:500;font-size:0.85rem">Select WAV file</div>
+                  <div id="stage-file-sub" class="text-mono text-xs text-muted">Waiting…</div>
+                </div>
+              </div>
+              <div class="stage-item" id="stage-upload">
+                <span class="stage-icon">📡</span>
+                <div>
+                  <div style="font-weight:500;font-size:0.85rem">Upload to server</div>
+                  <div id="stage-upload-sub" class="text-mono text-xs text-muted">Waiting…</div>
+                </div>
+              </div>
+              <div class="stage-item" id="stage-whisper">
+                <span class="stage-icon">🔤</span>
+                <div>
+                  <div style="font-weight:500;font-size:0.85rem">Whisper transcription</div>
+                  <div id="stage-whisper-sub" class="text-mono text-xs text-muted">Waiting…</div>
+                </div>
+              </div>
+              <div class="stage-item" id="stage-nlp">
+                <span class="stage-icon">📝</span>
+                <div>
+                  <div style="font-weight:500;font-size:0.85rem">Grammar + Summary</div>
+                  <div id="stage-nlp-sub" class="text-mono text-xs text-muted">Waiting…</div>
+                </div>
+              </div>
+              <div class="stage-item" id="stage-save">
+                <span class="stage-icon">💾</span>
+                <div>
+                  <div style="font-weight:500;font-size:0.85rem">Save to database</div>
+                  <div id="stage-save-sub" class="text-mono text-xs text-muted">Waiting…</div>
+                </div>
               </div>
             </div>
-            <div class="stage-item" id="stage-upload">
-              <span class="stage-icon">📡</span>
-              <div>
-                <div style="font-weight:500;font-size:0.85rem">Upload to server</div>
-                <div id="stage-upload-sub" class="text-mono text-xs text-muted">Waiting…</div>
-              </div>
-            </div>
-            <div class="stage-item" id="stage-whisper">
-              <span class="stage-icon">🔤</span>
-              <div>
-                <div style="font-weight:500;font-size:0.85rem">Whisper transcription</div>
-                <div id="stage-whisper-sub" class="text-mono text-xs text-muted">Waiting…</div>
-              </div>
-            </div>
-            <div class="stage-item" id="stage-nlp">
-              <span class="stage-icon">📝</span>
-              <div>
-                <div style="font-weight:500;font-size:0.85rem">Grammar + Summary</div>
-                <div id="stage-nlp-sub" class="text-mono text-xs text-muted">Waiting…</div>
-              </div>
-            </div>
-            <div class="stage-item" id="stage-save">
-              <span class="stage-icon">💾</span>
-              <div>
-                <div style="font-weight:500;font-size:0.85rem">Save to database</div>
-                <div id="stage-save-sub" class="text-mono text-xs text-muted">Waiting…</div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Progress bar -->
-          <div id="progress-wrap" class="hidden mt-2">
-            <div style="display:flex;justify-content:space-between;
+            <!-- Progress bar -->
+            <div id="progress-wrap" class="hidden mt-2">
+              <div style="display:flex;justify-content:space-between;
                         font-size:0.72rem;color:var(--text-3);
                         font-family:var(--font-mono);margin-bottom:4px">
-              <span id="progress-label">Uploading…</span>
-              <span id="progress-pct">0%</span>
+                <span id="progress-label">Uploading…</span>
+                <span id="progress-pct">0%</span>
+              </div>
+              <div class="progress-wrap">
+                <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+              </div>
             </div>
-            <div class="progress-wrap">
-              <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+          </div>
+
+          <!-- Result card -->
+          <div class="card hidden" id="result-card">
+            <p class="section-label" style="color:var(--green)">✓ Lecture Saved!</p>
+            <div id="result-info" style="font-size:0.875rem;display:flex;flex-direction:column;gap:8px">
+            </div>
+            <div style="margin-top:1rem;display:flex;gap:8px">
+              <a href="#" class="btn btn-primary btn-sm" id="result-view">View Lecture →</a>
+              <button class="btn btn-ghost btn-sm" id="result-another">Upload Another</button>
             </div>
           </div>
-        </div>
 
-        <!-- Result card -->
-        <div class="card hidden" id="result-card">
-          <p class="section-label" style="color:var(--green)">✓ Lecture Saved!</p>
-          <div id="result-info"
-            style="font-size:0.875rem;display:flex;flex-direction:column;gap:8px">
+          <!-- Pipeline info -->
+          <div class="card">
+            <p class="section-label">Processing Pipeline</p>
+            <div style="font-size:0.82rem;color:var(--text-2);line-height:1.8">
+              <p>1. WAV → <span class="text-accent">POST /uploadfile/</span></p>
+              <p>2. Whisper Small → English translation</p>
+              <p>3. T5 grammar correction</p>
+              <p>4. BART-large-cnn summarization</p>
+              <p>5. Saved to MySQL database</p>
+            </div>
+            <p class="text-xs text-muted mt-2">
+              ⏱ Processing typically takes 30–120 seconds depending on audio length.
+            </p>
           </div>
-          <div style="margin-top:1rem;display:flex;gap:8px">
-            <a href="#" class="btn btn-primary btn-sm" id="result-view">View Lecture →</a>
-            <button class="btn btn-ghost btn-sm" id="result-another">Upload Another</button>
-          </div>
-        </div>
 
-        <!-- Pipeline info -->
-        <div class="card">
-          <p class="section-label">Processing Pipeline</p>
-          <div style="font-size:0.82rem;color:var(--text-2);line-height:1.8">
-            <p>1. WAV → <span class="text-accent">POST /uploadfile/</span></p>
-            <p>2. Whisper Small → English translation</p>
-            <p>3. T5 grammar correction</p>
-            <p>4. BART-large-cnn summarization</p>
-            <p>5. Saved to MySQL database</p>
-          </div>
-          <p class="text-xs text-muted mt-2">
-            ⏱ Processing typically takes 30–120 seconds depending on audio length.
-          </p>
         </div>
-
       </div>
     </div>
-  </div>
 
-  <!-- ══════════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════════
        DEBUG TAB
   ══════════════════════════════════════════════════ -->
-  <div id="tab-debug" class="hidden">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start">
+    <div id="tab-debug" class="hidden">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start">
 
-      <!-- Left: form -->
-      <div class="fade-in">
-        <div class="upload-zone mb-3" id="debug-drop-zone">
-          <input type="file" id="debug-file-input" accept=".pcm,.wav,audio/*" />
-          <div class="upload-icon">🔍</div>
-          <h3>Drop PCM or WAV file</h3>
-          <p>Check audio amplitude &amp; transcript quality</p>
-          <div id="debug-file-chosen" style="margin-top:0.75rem;display:none">
-            <span class="badge badge-blue" id="debug-file-badge"></span>
+        <!-- Left: form -->
+        <div class="fade-in">
+          <div class="upload-zone mb-3" id="debug-drop-zone">
+            <input type="file" id="debug-file-input" accept=".pcm,.wav,audio/*" />
+            <div class="upload-icon">🔍</div>
+            <h3>Drop PCM or WAV file</h3>
+            <p>Check audio amplitude &amp; transcript quality</p>
+            <div id="debug-file-chosen" style="margin-top:0.75rem;display:none">
+              <span class="badge badge-blue" id="debug-file-badge"></span>
+            </div>
+          </div>
+
+          <div class="card">
+            <p class="section-label">Debug Options</p>
+
+            <div class="form-group">
+              <label class="form-label">Language</label>
+              <select class="form-select" id="debug-language">
+                <option value="ta">Tamil</option>
+                <option value="hi">Hindi</option>
+                <option value="te">Telugu</option>
+                <option value="kn">Kannada</option>
+                <option value="ml">Malayalam</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Initial Prompt</label>
+              <input type="text" class="form-input" id="debug-prompt" placeholder="Optional keywords" />
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" class="mb-2">
+              <div>
+                <label class="form-label">Sample Rate</label>
+                <input type="number" class="form-input" id="debug-samplerate" value="16000" />
+              </div>
+              <div>
+                <label class="form-label">Channels</label>
+                <input type="number" class="form-input" id="debug-channels" value="1" />
+              </div>
+              <div>
+                <label class="form-label">Bit Depth</label>
+                <input type="number" class="form-input" id="debug-bits" value="16" />
+              </div>
+            </div>
+
+            <button class="btn btn-primary" id="btn-debug" style="width:100%;justify-content:center" disabled>
+              🔍 Analyse Audio
+            </button>
           </div>
         </div>
 
-        <div class="card">
-          <p class="section-label">Debug Options</p>
-
-          <div class="form-group">
-            <label class="form-label">Language</label>
-            <select class="form-select" id="debug-language">
-              <option value="ta">Tamil</option>
-              <option value="hi">Hindi</option>
-              <option value="te">Telugu</option>
-              <option value="kn">Kannada</option>
-              <option value="ml">Malayalam</option>
-              <option value="en">English</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Initial Prompt</label>
-            <input type="text" class="form-input" id="debug-prompt"
-              placeholder="Optional keywords" />
-          </div>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" class="mb-2">
-            <div>
-              <label class="form-label">Sample Rate</label>
-              <input type="number" class="form-input" id="debug-samplerate" value="16000" />
-            </div>
-            <div>
-              <label class="form-label">Channels</label>
-              <input type="number" class="form-input" id="debug-channels" value="1" />
-            </div>
-            <div>
-              <label class="form-label">Bit Depth</label>
-              <input type="number" class="form-input" id="debug-bits" value="16" />
+        <!-- Right: results -->
+        <div class="fade-in">
+          <div class="card" id="debug-result-card">
+            <p class="section-label">Analysis Results</p>
+            <div id="debug-result-body">
+              <div class="empty-state" style="padding:2rem 0">
+                <div class="empty-icon" style="font-size:2rem">🔍</div>
+                <p>Upload a file and click Analyse</p>
+              </div>
             </div>
           </div>
-
-          <button class="btn btn-primary" id="btn-debug"
-            style="width:100%;justify-content:center" disabled>
-            🔍 Analyse Audio
-          </button>
         </div>
+
       </div>
-
-      <!-- Right: results -->
-      <div class="fade-in">
-        <div class="card" id="debug-result-card">
-          <p class="section-label">Analysis Results</p>
-          <div id="debug-result-body">
-            <div class="empty-state" style="padding:2rem 0">
-              <div class="empty-icon" style="font-size:2rem">🔍</div>
-              <p>Upload a file and click Analyse</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
-  </div>
 
-</main>
+  </main>
 
-<footer class="footer">
-  <span class="footer-text">SmartClassroom v6 · ESP32 + FastAPI + Whisper</span>
-  <span class="footer-text"><em id="footer-url">localhost:8000</em></span>
-</footer>
+  <footer class="footer">
+    <span class="footer-text">SmartClassroom v6 · ESP32 + FastAPI + Whisper</span>
+    <span class="footer-text"><em id="footer-url">localhost:8000</em></span>
+  </footer>
 
-<div class="toast-container" id="toast-container"></div>
+  <div class="toast-container" id="toast-container"></div>
 
-<!-- ✅ ONE script tag — module pointing to js/upload.js -->
-<script type="module" src="upload.js"></script>
+  <!-- ✅ ONE script tag — module pointing to js/upload.js -->
+  <script type="module" src="upload.js"></script>
+  <script>
+    (function ()
+    {
+      const btn = document.getElementById('nav-hamburger');
+      const links = document.getElementById('nav-links');
+      if (!btn || !links) return;
+
+      btn.addEventListener('click', () =>
+      {
+        const isOpen = links.classList.toggle('open');
+        btn.classList.toggle('open', isOpen);
+        btn.setAttribute('aria-expanded', isOpen);
+      });
+
+      // Close menu when a link is tapped
+      links.querySelectorAll('a').forEach(a =>
+      {
+        a.addEventListener('click', () =>
+        {
+          links.classList.remove('open');
+          btn.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      });
+
+      // Close on outside tap
+      document.addEventListener('click', (e) =>
+      {
+        if (!btn.contains(e.target) && !links.contains(e.target))
+        {
+          links.classList.remove('open');
+          btn.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    })();
+  </script>
 
 </body>
+
 </html>
