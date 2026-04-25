@@ -1,110 +1,173 @@
+<!-- SEO META - GitHub reads the first 160 characters for search snippets -->
+<!-- Smart Classroom: AI-powered live lecture to auto notes system using OpenAI Whisper, FastAPI, ESP32 IoT, MySQL. Free. Open source. Deployed. -->
+
 <div align="center">
 
-<!-- HEADER BANNER -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:1A237E,100:0288D1&height=200&section=header&text=Smart%20Classroom&fontSize=52&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Live%20Lecture%20→%20Auto%20Notes%20%7C%20AI-Powered&descAlignY=60&descSize=18" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:1A237E,100:0288D1&height=200&section=header&text=Smart%20Classroom&fontSize=52&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Live%20Lecture%20%E2%86%92%20Auto%20Notes%20%7C%20AI-Powered&descAlignY=60&descSize=18" width="100%"/>
 
 <br/>
 
-<!-- BADGES -->
-![Status](https://img.shields.io/badge/Status-Live%20%26%20Deployed-brightgreen?style=for-the-badge&logo=railway)
-![Backend](https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi)
-![AI](https://img.shields.io/badge/AI-OpenAI%20Whisper-412991?style=for-the-badge&logo=openai)
-![Frontend](https://img.shields.io/badge/Frontend-HTML%2FJS%2FCSS-orange?style=for-the-badge&logo=html5)
-![Hardware](https://img.shields.io/badge/Hardware-ESP32%20IoT-red?style=for-the-badge&logo=espressif)
-![Database](https://img.shields.io/badge/Database-MySQL-4479A1?style=for-the-badge&logo=mysql)
+<!-- PRIMARY KEYWORD BADGES -->
+![AI Lecture Transcription](https://img.shields.io/badge/AI%20Lecture%20Transcription-Live-brightgreen?style=for-the-badge&logo=railway)
+![Speech to Text](https://img.shields.io/badge/Speech%20to%20Text-OpenAI%20Whisper-412991?style=for-the-badge&logo=openai)
+![Auto Notes Generator](https://img.shields.io/badge/Auto%20Notes%20Generator-FastAPI-009688?style=for-the-badge&logo=fastapi)
+![ESP32 IoT Classroom](https://img.shields.io/badge/ESP32%20IoT-Classroom%20Device-red?style=for-the-badge&logo=espressif)
+![Open Source](https://img.shields.io/badge/Open%20Source-Free-blue?style=for-the-badge&logo=github)
+
+<br/><br/>
+
+# 🎓 Smart Classroom — AI Lecture to Auto Notes Generator
+
+### Automatically convert live classroom lectures into structured digital notes using AI
+
+**The easiest way to transcribe classroom lectures, correct grammar, summarize content,
+and store notes — fully automated with OpenAI Whisper + FastAPI + ESP32.**
 
 <br/>
 
-### 🎓 Automatically convert classroom lectures into structured digital notes — in real time.
-
-**[🚀 Live App](https://mdeepaksai.github.io/smart_class-to-auto-notes/frontend/) &nbsp;|&nbsp; [⚡ Backend API](https://smartclassroom-production.up.railway.app) &nbsp;|&nbsp; [📖 API Docs](https://smartclassroom-production.up.railway.app/docs) &nbsp;|&nbsp; [👤 Portfolio](https://mdeepaksai.github.io/portfolio/)**
+**[🚀 Live App](https://mdeepaksai.github.io/smart_class-to-auto-notes/frontend/) &nbsp;·&nbsp; [⚡ Backend API](https://smartclassroom-production.up.railway.app) &nbsp;·&nbsp; [📖 API Docs](https://smartclassroom-production.up.railway.app/docs) &nbsp;·&nbsp; [👤 Portfolio](https://mdeepaksai.github.io/portfolio/)**
 
 </div>
 
 ---
 
-## 📌 What is Smart Classroom?
-
-**Smart Classroom** is an AI-powered lecture transcription system that listens to live classroom audio and automatically converts it into clean, structured, grammar-corrected digital notes — accessible to students anytime, from any device.
-
-It supports two input modes:
-- 🌐 **Browser** — record or upload audio directly from any device
-- 📡 **ESP32 IoT device** — wireless hardware deployed in the classroom, no phone needed
-
-> Built as a real deployed product — not a college project or demo. Live and accessible now.
+<!-- KEYWORD-RICH DESCRIPTION FOR GOOGLE & GITHUB CRAWLERS -->
+> **Smart Classroom** is a free, open-source AI-powered lecture transcription tool that converts live classroom audio into structured, grammar-corrected, summarized digital notes. Built with OpenAI Whisper for speech-to-text, FastAPI for the backend REST API, Hugging Face Transformers for NLP, MySQL for storage, and ESP32 IoT hardware for wireless classroom audio capture. Supports browser recording, WAV file upload, and real-time chunked audio streaming from embedded devices.
 
 ---
 
-## ✨ Features
+## 📋 Table of Contents
+
+- [What is Smart Classroom?](#-what-is-smart-classroom)
+- [Key Features](#-key-features)
+- [How It Works](#-how-it-works)
+- [Tech Stack](#-tech-stack)
+- [API Endpoints](#-api-endpoints)
+- [Getting Started](#-getting-started)
+- [Project Structure](#-project-structure)
+- [ESP32 Hardware Setup](#-esp32-iot-hardware-setup)
+- [Project Status](#-project-status)
+- [Future Roadmap](#-future-roadmap)
+- [My Other AI Projects](#-my-other-ai-projects)
+- [Author](#-author)
+
+---
+
+## 🤖 What is Smart Classroom?
+
+**Smart Classroom** is an intelligent, AI-powered **lecture-to-notes automation system** designed for students and educators.
+
+It solves a real classroom problem: **students miss lecture content, struggle to take notes fast enough, or lose their notes entirely.** Smart Classroom listens to the lecture audio — either from a browser microphone or a wireless ESP32 IoT device placed in the classroom — and automatically:
+
+1. **Transcribes** the lecture using OpenAI Whisper (state-of-the-art speech recognition)
+2. **Corrects grammar** using Hugging Face T5 Transformer
+3. **Summarizes** the content using BART Large CNN
+4. **Stores** the notes in MySQL — accessible anytime from any device
+
+> ✅ Built as a **real deployed product** — not a demo or college project.
+> Live at: **https://mdeepaksai.github.io/smart_class-to-auto-notes/frontend/**
+
+---
+
+## ✨ Key Features
 
 | Feature | Description |
 |---|---|
-| 🎙️ **Real-time Transcription** | Live speech-to-text using OpenAI Whisper |
-| ✍️ **Grammar Correction** | Automatically corrects raw transcript using T5 Transformer |
-| 📝 **Auto Summarization** | Generates concise lecture summaries using BART Large CNN |
-| 📡 **ESP32 IoT Support** | Wireless classroom device streams PCM audio chunks over Wi-Fi |
-| 🌐 **Browser Recording** | Students can record or upload WAV/PCM files directly |
-| 🗂️ **Lecture Dashboard** | View, edit, delete, and tag all saved lecture notes |
-| 📦 **Chunked Upload** | Long lectures handled via chunk-based streaming from ESP32 |
-| 🗄️ **Database Storage** | All notes stored in MySQL via SQLAlchemy ORM |
-| 📱 **Responsive UI** | Works on desktop and mobile |
-
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-|---|---|
-| **Backend** | Python, FastAPI, SQLAlchemy, MySQL, Uvicorn |
-| **Frontend** | HTML5, CSS3, JavaScript ES6+, Fetch API |
-| **AI / ML** | OpenAI Whisper, Hugging Face Transformers, BART-Large-CNN, T5 Grammar |
-| **Hardware / IoT** | ESP32, I2S Microphone Module, SD Card, Wi-Fi PCM Streaming |
-| **Deployment** | Railway (backend), GitHub Pages (frontend) |
-| **Database** | MySQL with SQLAlchemy ORM (auto-table creation) |
+| 🎙️ **AI Lecture Transcription** | Real-time speech-to-text using OpenAI Whisper |
+| ✍️ **Automatic Grammar Correction** | Cleans raw transcript using T5 Transformer model |
+| 📝 **Lecture Summarization** | Concise summaries generated by BART Large CNN |
+| 📡 **ESP32 IoT Wireless Device** | Hardware classroom device — no phone needed |
+| 🌐 **Browser Audio Recording** | Record or upload WAV directly from any browser |
+| 🗂️ **Lecture Notes Dashboard** | View, edit, delete, and tag all saved lectures |
+| 📦 **Chunked Audio Streaming** | Handles long lectures via ESP32 chunk-based upload |
+| 🗄️ **MySQL Database Storage** | All notes saved and retrievable via REST API |
+| 📱 **Mobile Responsive UI** | Works on desktop, tablet, and mobile |
+| 🔓 **Free & Open Source** | No login, no signup, no paywalls |
 
 ---
 
 ## 🔁 How It Works
 
 ```
-Classroom Audio (Mic / ESP32)
+📢 Classroom Audio
         │
-        ▼
-  FastAPI Backend
-        │
-        ├──▶  OpenAI Whisper   →  Raw Transcript
-        │
-        ├──▶  T5 Transformer   →  Grammar Corrected Text
-        │
-        ├──▶  BART CNN         →  Summary of Lecture
-        │
-        └──▶  MySQL Database   →  Saved & Retrievable Notes
-                                          │
-                                          ▼
-                               Student Dashboard (Frontend)
-                               View · Edit · Delete · Search
+        ├── 🌐 Browser Mic / WAV Upload
+        └── 📡 ESP32 IoT Device (Wi-Fi PCM Stream)
+                        │
+                        ▼
+              ⚡ FastAPI Backend
+                        │
+          ┌─────────────┼──────────────┐
+          ▼             ▼              ▼
+   🧠 OpenAI       📝 T5 Grammar   📊 BART CNN
+     Whisper        Correction     Summarization
+   (Transcript)   (Clean Text)    (Key Points)
+          │             │              │
+          └─────────────┴──────────────┘
+                        │
+                        ▼
+               🗄️ MySQL Database
+                        │
+                        ▼
+            🖥️ Student Dashboard
+         View · Edit · Delete · Search
 ```
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology | Purpose |
+|---|---|---|
+| **Backend** | Python, FastAPI, Uvicorn | REST API server |
+| **AI / Speech** | OpenAI Whisper | Speech-to-text transcription |
+| **NLP / Grammar** | Hugging Face Transformers, T5 | Grammar correction |
+| **Summarization** | BART Large CNN | Lecture summarization |
+| **Frontend** | HTML5, CSS3, JavaScript ES6+ | Student-facing UI |
+| **Database** | MySQL, SQLAlchemy ORM | Note storage & retrieval |
+| **IoT Hardware** | ESP32, I2S Microphone, SD Card | Wireless audio capture |
+| **Deployment** | Railway (backend), GitHub Pages (frontend) | Cloud hosting |
 
 ---
 
 ## 📡 API Endpoints
 
+> 📖 Full interactive docs: **https://smartclassroom-production.up.railway.app/docs**
+
 | Method | Endpoint | Description |
 |---|---|---|
-| `POST` | `/uploadfile/` | Manual WAV file upload from browser |
-| `POST` | `/uploadraw/` | Raw PCM upload from ESP32 |
-| `POST` | `/uploadchunk/` | Chunked PCM streaming from ESP32 |
-| `POST` | `/debug_audio/` | Check audio amplitude and quality |
-| `GET` | `/lectures/` | Retrieve all saved lecture notes |
-| `GET` | `/lectures/{id}` | Retrieve a single lecture by ID |
-| `PATCH` | `/lectures/{id}` | Edit a lecture's content |
+| `POST` | `/uploadfile/` | Upload WAV file from browser |
+| `POST` | `/uploadraw/` | Upload raw PCM from ESP32 |
+| `POST` | `/uploadchunk/` | Chunked PCM stream from ESP32 |
+| `POST` | `/debug_audio/` | Check audio amplitude & quality |
+| `GET` | `/lectures/` | Get all saved lecture notes |
+| `GET` | `/lectures/{id}` | Get single lecture by ID |
+| `PATCH` | `/lectures/{id}` | Edit lecture content |
 | `DELETE` | `/lectures/{id}` | Delete a lecture |
 
-> 📖 **Interactive API Docs:** [https://smartclassroom-production.up.railway.app/docs](https://smartclassroom-production.up.railway.app/docs)
+### Example API Response
+
+```json
+{
+  "id": 12,
+  "title": "Introduction to Signals and Systems",
+  "subject": "ECE",
+  "transcript": "Today we will cover Fourier transforms...",
+  "corrected_text": "Today, we will cover Fourier transforms...",
+  "summary": "Lecture covered Fourier transforms and their applications in signal processing.",
+  "created_at": "2026-04-25T10:30:00"
+}
+```
 
 ---
 
 ## 🚀 Getting Started
+
+### Prerequisites
+
+- Python 3.9+
+- MySQL Server
+- pip & Git
 
 ### Backend Setup
 
@@ -115,55 +178,70 @@ cd smart_class-to-auto-notes
 
 # 2. Create & activate virtual environment
 python -m venv venv
-venv\Scripts\activate          # Windows
-# source venv/bin/activate     # Mac/Linux
 
-# 3. Install dependencies
+# Windows
+venv\Scripts\activate
+# Mac / Linux
+source venv/bin/activate
+
+# 3. Install all dependencies
 pip install -r requirements.txt
 
-# 4. Configure your MySQL database in database_model.py
+# 4. Configure your MySQL database (see below)
 
-# 5. Start the server
+# 5. Start the FastAPI server
 python -m uvicorn main:app --reload
 ```
 
-Visit **http://127.0.0.1:8000/docs** for the interactive Swagger UI.
-
----
+✅ Server runs at: **http://127.0.0.1:8000**
+✅ Swagger UI at: **http://127.0.0.1:8000/docs**
 
 ### Frontend Setup
 
 ```bash
-# Navigate to the frontend folder
-cd frontend
-
-# Open index.html directly in browser
-# OR serve with Live Server extension in VS Code
+# Open index.html in any browser
+# OR use VS Code Live Server extension
+# Frontend auto-connects to http://127.0.0.1:8000
 ```
-
-> The frontend connects to the FastAPI backend at `http://127.0.0.1:8000`.
-
----
 
 ### Database Setup
 
-1. Create a MySQL database locally or on a cloud server
-2. Update the connection string in `database_model.py`:
-   ```python
-   DATABASE_URL = "mysql+pymysql://user:password@localhost/smartclassroom"
-   ```
-3. Tables are **auto-created** on first server startup via SQLAlchemy
+```python
+# In database_model.py, update this line:
+DATABASE_URL = "mysql+pymysql://YOUR_USER:YOUR_PASSWORD@localhost/smartclassroom"
+```
+
+```sql
+-- Create the database in MySQL
+CREATE DATABASE smartclassroom;
+```
+
+> Tables are **auto-created** on first server startup via SQLAlchemy ORM.
 
 ---
 
-### ESP32 Hardware Setup
+## 📡 ESP32 IoT Hardware Setup
 
-1. Flash the ESP32 with the provided firmware
-2. Connect the **I2S microphone module** to the ESP32's I2S pins
-3. Insert an **SD card** for local audio backup
-4. Set your Wi-Fi credentials and backend URL in the firmware config
-5. Power on — ESP32 will auto-capture audio and stream chunks to `/uploadchunk/`
-6. Backend assembles, transcribes, corrects, summarizes, and saves notes automatically
+The ESP32 acts as a **wireless classroom microphone** — no phone or laptop needed in the classroom.
+
+```
+Hardware Required:
+  ESP32 Development Board
+  I2S MEMS Microphone Module (e.g. INMP441)
+  MicroSD Card Module
+  Wi-Fi connection
+```
+
+```
+Steps:
+1. Flash ESP32 with the provided firmware
+2. Connect I2S microphone to ESP32 I2S pins (GPIO 25, 26, 27)
+3. Insert MicroSD card for local audio backup
+4. Set Wi-Fi SSID, password & backend URL in firmware config
+5. Power on → ESP32 auto-captures, streams, transcribes & saves
+```
+
+> ESP32 streams chunked PCM audio to `/uploadchunk/` → backend assembles → Whisper transcribes → T5 corrects grammar → BART summarizes → MySQL saves.
 
 ---
 
@@ -172,86 +250,94 @@ cd frontend
 ```
 smart_class-to-auto-notes/
 │
-├── main.py                 # FastAPI app — all API routes
+├── main.py                 # FastAPI app — all API routes & logic
 ├── database_model.py       # SQLAlchemy models & DB connection
-├── table.py                # Database table definitions
-├── requirements.txt        # Python dependencies
+├── table.py                # Database table schema definitions
+├── requirements.txt        # All Python dependencies
+├── .gitignore
 │
-├── index.html              # Landing page
+├── index.html              # Landing / home page
 ├── index.css               # Landing page styles
-├── index.js                # Landing page JS
+├── index.js                # Landing page logic
 │
-├── Upload.html             # Audio upload page
+├── Upload.html             # Audio upload interface
 ├── upload.css              # Upload page styles
-├── upload.js               # Upload page logic
+├── upload.js               # Upload & recording logic
 │
-├── lectures.html           # Lecture dashboard
-├── Lecturedetail.html      # Single lecture view
-├── Style.css               # Shared styles
-├── Api.js                  # Frontend API calls
-│
-└── .gitignore
+├── lectures.html           # All lectures dashboard
+├── Lecturedetail.html      # Single lecture detail view
+├── Style.css               # Shared global styles
+└── Api.js                  # Centralized frontend API calls
 ```
 
 ---
 
 ## ✅ Project Status
 
-- [x] FastAPI backend fully implemented
-- [x] MySQL database integration with SQLAlchemy ORM
-- [x] OpenAI Whisper speech recognition pipeline
-- [x] Grammar correction using Hugging Face T5
-- [x] Lecture summarization using BART Large CNN
-- [x] HTML/JS/CSS frontend completed
-- [x] ESP32 hardware integration with chunked PCM streaming
+- [x] FastAPI backend fully implemented & deployed
+- [x] MySQL database with SQLAlchemy ORM
+- [x] OpenAI Whisper speech-to-text pipeline
+- [x] Grammar correction — Hugging Face T5
+- [x] Lecture summarization — BART Large CNN
+- [x] HTML/CSS/JS frontend — browser recording + upload
+- [x] ESP32 IoT hardware integration
+- [x] Chunked PCM audio streaming from embedded device
 - [x] Deployed live on Railway + GitHub Pages
 
 ---
 
-## 🔮 Future Improvements
+## 🔮 Future Roadmap
 
-- [ ] Real-time streaming transcription (WebSocket)
-- [ ] Multi-language transcription support (Tamil, Hindi, Telugu)
+- [ ] Real-time WebSocket streaming transcription
+- [ ] Multi-language support (Tamil, Hindi, Telugu, Malayalam)
 - [ ] Student login & per-student note management
-- [ ] Search and filter lectures by subject, date, or keyword
-- [ ] Integration with LMS platforms (Moodle, Google Classroom)
-- [ ] Fine-tuned Whisper model for classroom-specific audio
-- [ ] Mobile app (React Native)
+- [ ] Search and filter lectures by subject, date, keyword
+- [ ] LMS integration (Moodle, Google Classroom)
+- [ ] Fine-tuned Whisper model for classroom acoustics
+- [ ] React Native mobile app
+- [ ] Offline mode with local Whisper model
 
 ---
 
-## 🔗 My Other Projects
+## 🔗 My Other AI Projects
 
 <table>
 <tr>
-<td align="center" width="50%">
+<td width="50%" valign="top">
 
 ### 🎙️ VoiceID — Free AI Voice Detector
 
-Detect if a voice is **human or AI-generated** in seconds.
+> Detect if a voice is **human or AI-generated** in seconds
 
 - 88 acoustic features analysed per audio file
+- Classifies voice as Human or AI with confidence score
 - Supports English, Tamil, Hindi, Malayalam, Telugu
 - Upload MP3/WAV or record live in browser
-- Confidence score + JSON export
+- Export results as JSON or share link
 - 90+ visitors · 26+ analyses · Free, no login
 
-**[🔴 Live Demo](https://mdeepaksai.github.io/human-or-AI/) &nbsp;|&nbsp; [📖 API Docs](https://human-or-ai-production-8e10.up.railway.app/docs)**
+**Keywords:** AI voice detection, deepfake audio detector, synthetic voice classifier, audio forensics, free voice AI detector Indian languages
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit-red?style=for-the-badge)](https://mdeepaksai.github.io/human-or-AI/)
+[![API Docs](https://img.shields.io/badge/API%20Docs-View-blue?style=for-the-badge)](https://human-or-ai-production-8e10.up.railway.app/docs)
 
 </td>
-<td align="center" width="50%">
+<td width="50%" valign="top">
 
 ### 🎓 Smart Classroom (this repo)
 
-Convert live lectures into auto-generated digital notes.
+> Convert live lectures into **auto-generated digital notes**
 
 - Real-time transcription with OpenAI Whisper
-- Grammar correction + summarization
-- ESP32 IoT hardware support
-- Browser recording + dashboard
-- Live on Railway + GitHub Pages
+- Grammar correction + lecture summarization
+- ESP32 IoT wireless classroom device
+- Browser recording + notes dashboard
+- MySQL storage — accessible anytime
 
-**[🚀 Live App](https://mdeepaksai.github.io/smart_class-to-auto-notes/frontend/) &nbsp;|&nbsp; [⚡ Backend](https://smartclassroom-production.up.railway.app)**
+**Keywords:** lecture transcription AI, speech to notes python, classroom AI tool, OpenAI Whisper FastAPI ESP32, auto notes generator
+
+[![Live App](https://img.shields.io/badge/Live%20App-Visit-green?style=for-the-badge)](https://mdeepaksai.github.io/smart_class-to-auto-notes/frontend/)
+[![Backend API](https://img.shields.io/badge/Backend%20API-Visit-orange?style=for-the-badge)](https://smartclassroom-production.up.railway.app)
 
 </td>
 </tr>
@@ -259,14 +345,30 @@ Convert live lectures into auto-generated digital notes.
 
 ---
 
-## 👨‍💻 Built By
+## 🔍 SEO Keywords
+
+> *This section helps search engines and GitHub discovery index this project correctly.*
+
+**Primary:** AI lecture transcription · automatic notes generator · speech to text lecture · OpenAI Whisper FastAPI · classroom AI tool · lecture to notes python
+
+**Secondary:** ESP32 IoT microphone · Hugging Face BART summarization · T5 grammar correction · MySQL SQLAlchemy FastAPI · GitHub Pages Railway deployment · free open source lecture recorder
+
+**Long-tail:** convert classroom lecture to notes automatically · free AI tool for students India · OpenAI Whisper ESP32 project · FastAPI speech recognition MySQL · auto generate notes from audio python
+
+---
+
+## 👨‍💻 Author
 
 <div align="center">
 
 **Mallarpu Deepak Sai**
 2nd Year ECE Student — KIT, Tamil Nadu
 
-[![Portfolio](https://img.shields.io/badge/Portfolio-Visit-1A237E?style=for-the-badge&logo=github)](https://mdeepaksai.github.io/portfolio/)
+*Building real AI tools for real problems — not just for marks.*
+
+<br/>
+
+[![Portfolio](https://img.shields.io/badge/Portfolio-Visit%20Now-1A237E?style=for-the-badge&logo=googlechrome&logoColor=white)](https://mdeepaksai.github.io/portfolio/)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/mdeepaksai)
 [![GitHub](https://img.shields.io/badge/GitHub-Follow-181717?style=for-the-badge&logo=github)](https://github.com/mDeepaksai)
 [![Email](https://img.shields.io/badge/Email-Contact-D14836?style=for-the-badge&logo=gmail)](mailto:mdeepaksai806@gmail.com)
@@ -279,9 +381,17 @@ Convert live lectures into auto-generated digital notes.
 
 <div align="center">
 
-⭐ **If this project helped you or impressed you, please star the repo!** ⭐
+### ⭐ Star this repo if it helped you!
 
-It keeps me motivated to build more open tools. 🚀
+*Stars help other students and developers discover this project on GitHub search.*
+
+![GitHub stars](https://img.shields.io/github/stars/mDeepaksai/smart_class-to-auto-notes?style=social)
+![GitHub forks](https://img.shields.io/github/forks/mDeepaksai/smart_class-to-auto-notes?style=social)
+
+<br/>
+
+**GitHub Topics to add on your repo:**
+`speech-to-text` `lecture-transcription` `openai-whisper` `fastapi` `esp32` `iot` `auto-notes` `classroom-ai` `nlp` `huggingface` `mysql` `python` `education-technology` `ai` `deep-learning`
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0288D1,100:1A237E&height=100&section=footer" width="100%"/>
 
