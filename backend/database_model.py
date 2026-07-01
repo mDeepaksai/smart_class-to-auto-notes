@@ -5,10 +5,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-db_url = os.environ.get(
-    "DATABASE_URL",
-    "mysql+pymysql://root:deeps%40simi@localhost:3306/smartclassroom"
-)
+db_url = os.environ.get("DATABASE_URL")
+if not db_url:
+    raise RuntimeError("DATABASE_URL environment variable is not set")
 
 # Fix Railway MySQL URL format
 if db_url and "mysql://" in db_url and "pymysql" not in db_url:
