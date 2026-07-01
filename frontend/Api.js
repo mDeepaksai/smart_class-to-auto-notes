@@ -2,7 +2,7 @@
 //  Api.js — SmartClassroom API Layer
 // ============================================================
 
-export const API_BASE = 'https://smartclassroom-production.up.railway.app';
+export const API_BASE = 'https://smartclassroom-production-a54a.up.railway.app';
 
 // ════════════════════════════════════════════════════════════
 //  CORE FETCH WRAPPER
